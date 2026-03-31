@@ -906,6 +906,11 @@ textarea { resize: vertical; min-height: 80px; }
 .mf--span {
   grid-column: span 2;
 }
+.mf-divider {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--line);
+  margin: 2px 0;
+}
 .mf__label {
   font-size: 10px;
   font-weight: 600;

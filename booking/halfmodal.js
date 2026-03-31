@@ -256,10 +256,6 @@ export async function initHalfModal(bookings, {
     const selCourse   = courseOpts.find(c => c.id === b.courseId) || courseOpts[0] || { duration: 0, price: 0 };
     const selExt      = extOpts.find(e => e.id === b.extensionId) || extOpts[0] || { duration: 0, price: 0 };
     const selOps      = (b.options || []).map(id => currentOps.find(o => o.id === id)).filter(Boolean);
-    const initNomFees = NOMINATIONS[b.nomination] || { membershipFee: 0, nominationFee: 0, specialNominationFee: 0 };
-    const initOpTotal = selOps.reduce((s, o) => s + o.price, 0);
-    const tfOpt       = TRANSPORT_FEE_OPTIONS.find(o => o.id === b.transportFeeId);
-    const discOpt     = DISCOUNT_OPTIONS.find(o => o.id === b.discountId);
 
     const startMin  = toMin(b.time);
     const outTime   = startMin != null ? toTime(startMin + selCourse.duration + selExt.duration) : '';
@@ -336,45 +332,38 @@ export async function initHalfModal(bookings, {
     return `<div class="mf-grid">
       ${f('伝達',         chk(b.dentatsu, 'mf-dentatsu'))}
       ${f('ヘブン',        chk(b.heavenCheck, 'mf-heaven-check'))}
+      ${f('確電',          chk(b.confirmedCall, 'mf-confirmed-call'))}
+      ${f('アンケ',         chk(b.survey, 'mf-survey'))}
+      ${f('売上受取',       chk(b.salesReceipt, 'mf-sales-receipt'))}
+      <div class="mf-divider"></div>
       ${f('ブランド',       sel(brand, BRANDS.map(br => br.label), 'mf-brand'))}
       ${f('担当',          sel(b.staffId, STAFF_OPTIONS, 'mf-staff'))}
       ${f('TEL',          telCtrl, 2)}
-      ${f('確電',          chk(b.confirmedCall, 'mf-confirmed-call'))}
       ${f('お客様名',       txt(b.customerName, 'mf-customer-name'))}
       ${f('指名区分',       nomCtrl)}
       ${f('媒体',          mediaCtrl, 2)}
-      ${f('財布',          walletInput(b.wallet))}
-      ${f('アンケ',         chk(b.survey, 'mf-survey'))}
-      ${f('売上受取',       chk(b.salesReceipt, 'mf-sales-receipt'))}
       ${f('女性',          sel(currentCastLabel, castLabels, 'mf-cast'))}
-      ${f('予約時間',       ro(b.time || '', 'mf-time'))}
       ${f('コース',         courseCtrl)}
-      ${f('延長',          extCtrl)}
-      ${f('金額',          ro(calcAmt.toLocaleString('ja-JP'), 'mf-amount'))}
-      ${f('IN',           ro(b.time || '', 'mf-in'))}
-      ${f('OUT',          ro(outTime, 'mf-out'))}
+      ${f('予約時間',       ro(b.time || '', 'mf-time'))}
       ${f('デリ区分',       sel(b.deliveryTypeId, DELIVERY_TYPE_OPTIONS, 'mf-delivery'))}
-      ${f('場所',          txt(b.location || '', 'mf-location'), 2)}
-      ${f('住所',          txt(b.address || '', 'mf-address'), 2)}
-      ${f('部屋番',         txt(b.roomNo, 'mf-room-no'))}
       ${f('OP',           opCtrl, 2)}
       ${f('交通費',         tfCtrl)}
       ${f('割引',          discCtrl)}
-      ${f('女性伝達備考',    ta(initCastNote, 'mf-cast-note'), 2)}
+      ${f('延長',          extCtrl)}
+      ${f('財布',          walletInput(b.wallet))}
+      ${f('場所',          txt(b.location || '', 'mf-location'), 2)}
+      ${f('住所',          txt(b.address || '', 'mf-address'), 2)}
+      ${f('部屋番',         txt(b.roomNo, 'mf-room-no'))}
+      ${f('金額',          ro(calcAmt.toLocaleString('ja-JP'), 'mf-amount'))}
+      ${f('IN',           ro(b.time || '', 'mf-in'))}
+      ${f('OUT',          ro(outTime, 'mf-out'))}
+      ${f('女性伝達事項',    ta(initCastNote, 'mf-cast-note'), 2)}
       ${f('店舗備考',       ta(b.storeNote, 'mf-store-note'), 2)}
       ${f('行き車',         sel(b.carGoingId, CAR_OPTIONS, 'mf-car-going'))}
       ${f('帰り車',         sel(b.carReturnId, CAR_OPTIONS, 'mf-car-return'))}
       ${f('移動時間',       `<div class="mf__num-wrap"><input type="text" class="mf__input mf__input--num" id="mf-travel-time" value="${b.travelTime ?? ''}" inputmode="numeric" pattern="[0-9]*"><span class="mf__unit">分</span></div>`)}
       ${f('距離',          ro(calcDist, 'mf-distance'))}
       ${f('アウト予定時刻',  ro(calcPlan, 'mf-planned-out'))}
-      ${f('入会金',         ro(initNomFees.membershipFee.toLocaleString('ja-JP'), 'mf-bd-membership'))}
-      ${f('指名料',         ro(initNomFees.nominationFee.toLocaleString('ja-JP'), 'mf-bd-nomination'))}
-      ${f('特別指名料',     ro(initNomFees.specialNominationFee.toLocaleString('ja-JP'), 'mf-bd-special-nom'))}
-      ${f('コース料金',     ro(selCourse.price.toLocaleString('ja-JP'), 'mf-bd-course'))}
-      ${f('延長',           ro(selExt.price.toLocaleString('ja-JP'), 'mf-bd-extension'))}
-      ${f('OP合計',         ro(initOpTotal.toLocaleString('ja-JP'), 'mf-bd-op'))}
-      ${f('交通費',         ro((tfOpt?.value || 0).toLocaleString('ja-JP'), 'mf-bd-transport'))}
-      ${f('割引',           ro((discOpt?.value || 0).toLocaleString('ja-JP'), 'mf-bd-discount'))}
       ${f('shopId',        ro(brandShopId, 'mf-shop-id'))}
       ${f('memberId',      txt(b.memberId || '', 'mf-member-id'))}
       ${f('companionId',   ro(companionId, 'mf-companion-id'))}
@@ -430,11 +419,6 @@ export async function initHalfModal(bookings, {
         if (op) opTotal += op.price;
       });
       document.getElementById('mf-amount').value = (course.price + ext.price + opTotal).toLocaleString('ja-JP');
-
-      // 内訳フィールド更新
-      document.getElementById('mf-bd-course').value    = course.price.toLocaleString('ja-JP');
-      document.getElementById('mf-bd-extension').value = ext.price.toLocaleString('ja-JP');
-      document.getElementById('mf-bd-op').value        = opTotal.toLocaleString('ja-JP');
 
       // 距離 = 移動時間 × 1km
       document.getElementById('mf-distance').value =
@@ -514,32 +498,10 @@ export async function initHalfModal(bookings, {
       recalc();
     }
 
-    function recalcNomination() {
-      const nom  = document.getElementById('mf-nomination').value;
-      const fees = NOMINATIONS[nom] || { membershipFee: 0, nominationFee: 0, specialNominationFee: 0 };
-      document.getElementById('mf-bd-membership').value   = fees.membershipFee.toLocaleString('ja-JP');
-      document.getElementById('mf-bd-nomination').value   = fees.nominationFee.toLocaleString('ja-JP');
-      document.getElementById('mf-bd-special-nom').value  = fees.specialNominationFee.toLocaleString('ja-JP');
-    }
-
-    document.getElementById('mf-brand').addEventListener('change', () => {
-      updateBrandSelects();
-      recalcNomination();
-    });
+    document.getElementById('mf-brand').addEventListener('change', updateBrandSelects);
     document.getElementById('mf-cast').addEventListener('change', () => {
       const cast = CAST_OPTIONS.find(c => c.label === document.getElementById('mf-cast').value);
       document.getElementById('mf-companion-id').value = cast?.companionId || '';
-    });
-    document.getElementById('mf-nomination').addEventListener('change', recalcNomination);
-    document.getElementById('mf-transport-fee').addEventListener('change', () => {
-      const tfId  = document.getElementById('mf-transport-fee').value;
-      const tfOpt = TRANSPORT_FEE_OPTIONS.find(o => o.id === tfId);
-      document.getElementById('mf-bd-transport').value = (tfOpt?.value || 0).toLocaleString('ja-JP');
-    });
-    document.getElementById('mf-discount').addEventListener('change', () => {
-      const discId  = document.getElementById('mf-discount').value;
-      const discOpt = DISCOUNT_OPTIONS.find(o => o.id === discId);
-      document.getElementById('mf-bd-discount').value = (discOpt?.value || 0).toLocaleString('ja-JP');
     });
     document.getElementById('mf-course').addEventListener('change', recalc);
     document.getElementById('mf-extension').addEventListener('change', recalc);
