@@ -219,16 +219,43 @@ if (document.getElementById('booking-tbody')) {
       : `<td class="cell-money">¥${val.toLocaleString('ja-JP')}</td>`;
   }
 
+  function toMin(t) {
+    if (!t || typeof t !== 'string') return null;
+    const p = t.split(':');
+    if (p.length !== 2) return null;
+    const h = parseInt(p[0], 10), m = parseInt(p[1], 10);
+    if (isNaN(h) || isNaN(m)) return null;
+    return h * 60 + m;
+  }
+  function toTime(mins) {
+    if (mins == null || isNaN(mins)) return '';
+    const d = ((mins % 1440) + 1440) % 1440;
+    return `${String(Math.floor(d / 60)).padStart(2, '0')}:${String(d % 60).padStart(2, '0')}`;
+  }
+
   function renderRow(b, index) {
     const done = b.completed;
     const bd   = calcBreakdown(b);
+
+    // ── 導出フィールドを計算 ──
+    const calcAmount = bd.coursePrice + bd.extensionPrice + bd.opTotal;
+    const courseOpts = COURSE_OPTIONS[b.shopId] || [];
+    const extOpts    = EXTENSION_OPTIONS[b.shopId] || [];
+    const selCourse  = courseOpts.find(c => c.id === b.courseId) || { duration: 0 };
+    const selExt     = extOpts.find(e => e.id === b.extensionId) || { duration: 0 };
+    const outTime    = toMin(b.time) != null
+      ? toTime(toMin(b.time) + selCourse.duration + selExt.duration) : '';
+    const ttNum         = b.travelTime != null && b.travelTime !== '' ? parseInt(b.travelTime, 10) : null;
+    const travelDist    = ttNum != null ? `${ttNum}km` : null;
+    const plannedOutTime = toMin(outTime) != null && ttNum != null
+      ? toTime(toMin(outTime) + ttNum) : '';
 
     const brandLabel    = BRANDS.find(br => br.shopId === b.shopId)?.label || '';
     const staffLabel    = STAFF_OPTIONS.find(o => o.id === b.staffId)?.label || '';
     const mediaLabel    = MEDIA_OPTIONS.find(o => o.id === b.mediaId)?.label || '';
     const castLabel     = CAST_OPTIONS.find(c => c.companionId === b.companionId)?.label || '';
-    const courseLabel   = (COURSE_OPTIONS[b.shopId] || []).find(c => c.id === b.courseId)?.label || '';
-    const extLabel      = (EXTENSION_OPTIONS[b.shopId] || []).find(e => e.id === b.extensionId)?.label || '';
+    const courseLabel   = courseOpts.find(c => c.id === b.courseId)?.label || '';
+    const extLabel      = extOpts.find(e => e.id === b.extensionId)?.label || '';
     const deliveryLabel = DELIVERY_TYPE_OPTIONS.find(o => o.id === b.deliveryTypeId)?.label || '';
     const tfValue       = TRANSPORT_FEE_OPTIONS.find(o => o.id === b.transportFeeId)?.value ?? null;
     const discValue     = DISCOUNT_OPTIONS.find(o => o.id === b.discountId)?.value ?? null;
@@ -252,9 +279,9 @@ if (document.getElementById('booking-tbody')) {
         <td class="cell-time">${b.time}</td>
         <td>${dim(courseLabel)}</td>
         <td>${dim(extLabel)}</td>
-        <td class="cell-money">¥${b.amount.toLocaleString('ja-JP')}</td>
-        <td class="${b.inTime ? 'cell-time' : ''}">${dim(b.inTime)}</td>
-        <td class="${b.outTime ? 'cell-time' : ''}">${dim(b.outTime)}</td>
+        <td class="cell-money">¥${calcAmount.toLocaleString('ja-JP')}</td>
+        <td class="cell-time">${dim(b.time)}</td>
+        <td class="${outTime ? 'cell-time' : ''}">${dim(outTime)}</td>
         <td>${dim(deliveryLabel)}</td>
         <td class="cell-location">${truncate(b.location)}${b.address ? `<br><span class="cell-dim cell-location__addr">${truncate(b.address)}</span>` : ''}</td>
         <td>${dim(b.roomNo)}</td>
@@ -265,9 +292,9 @@ if (document.getElementById('booking-tbody')) {
         ${noteCell(b.storeNote)}
         <td>${carSelect(b.carGoingId, done)}</td>
         <td>${carSelect(b.carReturnId, done)}</td>
-        <td>${dim(b.travelDistance)}</td>
-        <td>${b.travelTime != null && b.travelTime !== '' ? `${b.travelTime}分` : '<span class="cell-dim">-</span>'}</td>
-        <td class="${b.plannedOutTime ? 'cell-time' : ''}">${dim(b.plannedOutTime)}</td>
+        <td>${dim(travelDist)}</td>
+        <td>${ttNum != null ? `${ttNum}分` : '<span class="cell-dim">-</span>'}</td>
+        <td class="${plannedOutTime ? 'cell-time' : ''}">${dim(plannedOutTime)}</td>
         <td class="cell-dim">${dim(b.shopId)}</td>
         <td class="cell-dim">${dim(b.memberId)}</td>
         <td class="cell-dim">${dim(b.companionId)}</td>

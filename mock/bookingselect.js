@@ -9,8 +9,8 @@ export const CAR_OPTIONS = [
   { id: 'car_03', label: '田中ドライバー' },
   { id: 'car_04', label: '大野ドライバー' },
   { id: 'car_05', label: '室崎ドライバー' },
-  { id: 'car_04', label: '高橋ドライバー' },
-  { id: 'car_05', label: '入江ドライバー' },
+  { id: 'car_06', label: '高橋ドライバー' },
+  { id: 'car_07', label: '入江ドライバー' },
 ];
 
 export const STAFF_OPTIONS = [
@@ -40,7 +40,6 @@ export const BRANDS = [
   { label: 'ごほうび', shopId: '01' },
   { label: 'ぐっすり', shopId: '02' },
   { label: '回春', shopId: '03' },
-  { label: 'ブランドD', shopId: '04' },
 ];
 
 /** 女性（キャスト）{ label, shopId, companionId } */
@@ -135,21 +134,21 @@ export const EXTENSION_OPTIONS = {
 /** ブランド(shopId)ごとのOP { id, label, price(円) } */
 export const OP_OPTIONS = {
   '01': [
-    { id: 'op_00', label: 'NN',    price: 5000 },
-    { id: 'op_01', label: '3P',    price: 8000 },
-    { id: 'op_02', label: '撮影',  price: 3000 },
-    { id: 'op_03', label: 'イラマ', price: 2000 },
+    { id: 'op_01_00', label: 'NN',    price: 5000 },
+    { id: 'op_01_01', label: '3P',    price: 8000 },
+    { id: 'op_01_02', label: '撮影',  price: 3000 },
+    { id: 'op_01_03', label: 'イラマ', price: 2000 },
   ],
   '02': [
-    { id: 'op_00', label: 'NN',   price: 5000 },
-    { id: 'op_01', label: '3P',   price: 8000 },
-    { id: 'op_02', label: '撮影', price: 3000 },
+    { id: 'op_02_00', label: 'NN',   price: 5000 },
+    { id: 'op_02_01', label: '3P',   price: 8000 },
+    { id: 'op_02_02', label: '撮影', price: 3000 },
   ],
   '03': [
-    { id: 'op_00', label: 'NN',    price: 5000 },
-    { id: 'op_01', label: '3P',    price: 8000 },
-    { id: 'op_02', label: '撮影',  price: 3000 },
-    { id: 'op_03', label: 'イラマ', price: 2000 },
+    { id: 'op_03_00', label: 'NN',    price: 5000 },
+    { id: 'op_03_01', label: '3P',    price: 8000 },
+    { id: 'op_03_02', label: '撮影',  price: 3000 },
+    { id: 'op_03_03', label: 'イラマ', price: 2000 },
   ],
 };
 

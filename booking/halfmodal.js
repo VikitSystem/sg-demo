@@ -24,6 +24,7 @@ export async function initHalfModal(bookings, {
   const modalBody       = document.getElementById('modal-body');
   const modalSubtitle   = document.getElementById('modal-subtitle');
   const modalActionBtns = document.getElementById('modal-action-btns');
+  const btnAdd          = document.getElementById('btn-add');
 
   let selectedTr    = null;
   let currentBooking = null;
@@ -62,6 +63,7 @@ export async function initHalfModal(bookings, {
     modal.querySelector('.modal-label').textContent = isNew ? '予約追加' : '予約編集';
     modalSubtitle.textContent = isNew ? '新規' : `${b.time}　${b.customerName}`;
     modalActionBtns.style.display = isNew ? 'none' : 'flex';
+    btnAdd.style.display = isNew ? '' : 'none';
     if (!isNew) updateCompleteBtn(b.completed);
     modalBody.innerHTML = renderForm(b);
     initFormListeners();
@@ -91,10 +93,9 @@ export async function initHalfModal(bookings, {
     closeModal();
   });
 
-  document.getElementById('btn-save').addEventListener('click', () => {
-    if (!currentBooking || !selectedTr || !renderRow) return;
-    const b = currentBooking;
+  // ── フォーム値収集ヘルパー ─────────────────────────────────────────────────
 
+  function collectForm(b) {
     b.dentatsu      = !!document.getElementById('mf-dentatsu')?.checked;
     b.heavenCheck   = !!document.getElementById('mf-heaven-check')?.checked;
     b.confirmedCall = !!document.getElementById('mf-confirmed-call')?.checked;
@@ -107,42 +108,41 @@ export async function initHalfModal(bookings, {
     b.carGoingId     = document.getElementById('mf-car-going').value;
     b.carReturnId    = document.getElementById('mf-car-return').value;
     b.mediaId        = document.getElementById('mf-media').value;
-    b.mediaDate      = document.getElementById('mf-media-date').value;
+    b.mediaDate      = document.getElementById('mf-media-date').value || null;
     b.courseId       = document.getElementById('mf-course').value;
     b.extensionId    = document.getElementById('mf-extension').value;
     b.transportFeeId = document.getElementById('mf-transport-fee').value;
     b.discountId     = document.getElementById('mf-discount').value;
 
-    b.tel1         = document.getElementById('mf-tel1').value;
-    b.tel2         = document.getElementById('mf-tel2').value;
-    b.tel3         = document.getElementById('mf-tel3').value;
-    b.customerName = document.getElementById('mf-customer-name').value;
-    b.roomNo       = document.getElementById('mf-room-no').value;
-    b.travelTime   = document.getElementById('mf-travel-time').value;
-    b.sgLink       = document.getElementById('mf-sg-link').value;
-
-    b.location  = document.getElementById('mf-location').value;
-    b.address   = document.getElementById('mf-address').value;
-    b.castNote  = document.getElementById('mf-cast-note').value;
-    b.storeNote = document.getElementById('mf-store-note').value;
-
-    b.wallet = document.getElementById('mf-wallet').value || null;
+    b.time         = document.getElementById('mf-time').value;
+    b.tel1         = document.getElementById('mf-tel1').value || null;
+    b.tel2         = document.getElementById('mf-tel2').value || null;
+    b.tel3         = document.getElementById('mf-tel3').value || null;
+    b.customerName = document.getElementById('mf-customer-name').value || null;
+    b.roomNo       = document.getElementById('mf-room-no').value || null;
+    b.travelTime   = document.getElementById('mf-travel-time').value || null;
+    b.sgLink       = document.getElementById('mf-sg-link').value || null;
+    b.location     = document.getElementById('mf-location').value || null;
+    b.address      = document.getElementById('mf-address').value || null;
+    b.castNote     = document.getElementById('mf-cast-note').value || null;
+    b.storeNote    = document.getElementById('mf-store-note').value || null;
+    b.wallet       = document.getElementById('mf-wallet').value || null;
 
     b.options = [];
     document.querySelectorAll('.mf__op-btn.is-active').forEach(btn => {
       b.options.push(btn.dataset.id);
     });
 
-    const amtStr = document.getElementById('mf-amount').value.replace(/,/g, '');
-    b.amount         = parseInt(amtStr, 10) || 0;
-    b.inTime         = document.getElementById('mf-in').value;
-    b.outTime        = document.getElementById('mf-out').value;
-    b.travelDistance = document.getElementById('mf-distance').value;
-    b.plannedOutTime = document.getElementById('mf-planned-out').value;
-
     b.shopId      = document.getElementById('mf-shop-id').value;
-    b.memberId    = document.getElementById('mf-member-id').value;
+    b.memberId    = document.getElementById('mf-member-id').value || null;
     b.companionId = document.getElementById('mf-companion-id').value;
+    return b;
+  }
+
+  document.getElementById('btn-save').addEventListener('click', () => {
+    if (!currentBooking || !selectedTr || !renderRow) return;
+    collectForm(currentBooking);
+    const b = currentBooking;
 
     const index = Number(selectedTr.dataset.index);
     const temp = document.createElement('tbody');
@@ -153,6 +153,25 @@ export async function initHalfModal(bookings, {
     selectedTr.classList.add('is-selected');
 
     modalSubtitle.textContent = `${b.time}　${b.customerName}`;
+    closeModal();
+  });
+
+  document.getElementById('btn-add').addEventListener('click', () => {
+    if (!renderRow) return;
+    const b = collectForm({ completed: false });
+
+    const newIndex = bookings.length;
+    bookings.push(b);
+
+    const tbody = document.getElementById('booking-tbody');
+    if (tbody) {
+      const temp = document.createElement('tbody');
+      temp.innerHTML = renderRow(b, newIndex).trim();
+      tbody.appendChild(temp.firstElementChild);
+      const countEl = document.getElementById('booking-count');
+      if (countEl) countEl.textContent = parseInt(countEl.textContent || '0', 10) + 1;
+    }
+
     closeModal();
   });
 
@@ -200,7 +219,7 @@ export async function initHalfModal(bookings, {
   // ── フォーム描画 ─────────────────────────────────────────────────────────
 
   function renderForm(b) {
-    const brandShopId = b.shopId || '';
+    const brandShopId = b.shopId || BRANDS[0]?.shopId || '';
     const brand       = BRANDS.find(br => br.shopId === brandShopId)?.label || BRANDS[0].label;
 
     // ── ヘルパー ──
@@ -330,11 +349,15 @@ export async function initHalfModal(bookings, {
     const companionId      = b.companionId || '';
 
     return `<div class="mf-grid">
-      ${f('伝達',         chk(b.dentatsu, 'mf-dentatsu'))}
-      ${f('ヘブン',        chk(b.heavenCheck, 'mf-heaven-check'))}
-      ${f('確電',          chk(b.confirmedCall, 'mf-confirmed-call'))}
-      ${f('アンケ',         chk(b.survey, 'mf-survey'))}
-      ${f('売上受取',       chk(b.salesReceipt, 'mf-sales-receipt'))}
+      <div class="mf mf--span">
+        <div class="mf__ctrl mf__chk-row">
+          <label class="mf__chk-item">${chk(b.dentatsu, 'mf-dentatsu')}伝達</label>
+          <label class="mf__chk-item">${chk(b.heavenCheck, 'mf-heaven-check')}ヘブン</label>
+          <label class="mf__chk-item">${chk(b.confirmedCall, 'mf-confirmed-call')}確電</label>
+          <label class="mf__chk-item">${chk(b.survey, 'mf-survey')}アンケ</label>
+          <label class="mf__chk-item">${chk(b.salesReceipt, 'mf-sales-receipt')}売上受取</label>
+        </div>
+      </div>
       <div class="mf-divider"></div>
       ${f('ブランド',       sel(brand, BRANDS.map(br => br.label), 'mf-brand'))}
       ${f('担当',          sel(b.staffId, STAFF_OPTIONS, 'mf-staff'))}
@@ -344,7 +367,7 @@ export async function initHalfModal(bookings, {
       ${f('媒体',          mediaCtrl, 2)}
       ${f('女性',          sel(currentCastLabel, castLabels, 'mf-cast'))}
       ${f('コース',         courseCtrl)}
-      ${f('予約時間',       ro(b.time || '', 'mf-time'))}
+      ${f('予約時間',       `<input type="text" class="mf__input" id="mf-time" value="${b.time || ''}" inputmode="numeric" maxlength="5" placeholder="HH:MM">`)}
       ${f('デリ区分',       sel(b.deliveryTypeId, DELIVERY_TYPE_OPTIONS, 'mf-delivery'))}
       ${f('OP',           opCtrl, 2)}
       ${f('交通費',         tfCtrl)}
@@ -502,6 +525,12 @@ export async function initHalfModal(bookings, {
     document.getElementById('mf-cast').addEventListener('change', () => {
       const cast = CAST_OPTIONS.find(c => c.label === document.getElementById('mf-cast').value);
       document.getElementById('mf-companion-id').value = cast?.companionId || '';
+    });
+    document.getElementById('mf-time').addEventListener('input', e => {
+      let v = e.target.value.replace(/[^0-9]/g, '');
+      if (v.length > 2) v = v.slice(0, 2) + ':' + v.slice(2, 4);
+      e.target.value = v;
+      recalc();
     });
     document.getElementById('mf-course').addEventListener('change', recalc);
     document.getElementById('mf-extension').addEventListener('change', recalc);
