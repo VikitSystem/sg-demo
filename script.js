@@ -1,5 +1,89 @@
 import { initHalfModal } from './booking/halfmodal.js';
 
+// ─── テーブルヘッダー追従 ──────────────────────────────────────────────────────
+{
+  const TOPBAR_H = 56;
+  let frame = null;
+  let clone = null;
+
+  function syncClone() {
+    const wrap = document.querySelector('.table-wrap');
+    if (!wrap || !clone) return;
+    const rect = wrap.getBoundingClientRect();
+    const theadH = wrap.querySelector('thead').getBoundingClientRect().height;
+    const visible = rect.top < TOPBAR_H && rect.bottom > TOPBAR_H + theadH;
+    if (visible) {
+      clone.style.display = '';
+      clone.style.top = TOPBAR_H + 'px';
+      clone.style.left = rect.left + 'px';
+      clone.style.width = wrap.offsetWidth + 'px';
+      // 横スクロール同期
+      clone.querySelector('table').style.transform = `translateX(-${wrap.scrollLeft}px)`;
+    } else {
+      clone.style.display = 'none';
+    }
+  }
+
+  function buildClone() {
+    const wrap = document.querySelector('.table-wrap');
+    if (!wrap) return;
+    const thead = wrap.querySelector('thead');
+    if (!thead) return;
+
+    clone = document.createElement('div');
+    clone.style.cssText = `
+      position: fixed;
+      z-index: 50;
+      overflow: hidden;
+      pointer-events: none;
+      background: #0d1019;
+      display: none;
+    `;
+
+    const tbl = document.createElement('table');
+    tbl.className = 'booking-table';
+    tbl.style.cssText = 'margin: 0; white-space: nowrap; table-layout: fixed;';
+    tbl.appendChild(thead.cloneNode(true));
+    clone.appendChild(tbl);
+    document.body.appendChild(clone);
+
+    // カラム幅を元テーブルの th から同期
+    function syncWidths() {
+      const srcThs = wrap.querySelectorAll('thead th');
+      const dstThs = clone.querySelectorAll('thead th');
+      srcThs.forEach((th, i) => {
+        if (dstThs[i]) dstThs[i].style.width = th.getBoundingClientRect().width + 'px';
+      });
+    }
+
+    const ro = new ResizeObserver(syncWidths);
+    ro.observe(wrap.querySelector('table'));
+    syncWidths();
+
+    wrap.addEventListener('scroll', () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => { frame = null; syncClone(); });
+    }, { passive: true });
+
+    syncClone();
+  }
+
+  function onScroll() {
+    if (frame) return;
+    frame = requestAnimationFrame(() => { frame = null; syncClone(); });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+
+  // DOM 準備後にクローンを生成
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', buildClone);
+  } else {
+    buildClone();
+  }
+}
+
 // ─── 列プリセット ─────────────────────────────────────────────────────────────
 // 列番号は index.html の <th> 順（1始まり）
 const PRESET_COLS = {

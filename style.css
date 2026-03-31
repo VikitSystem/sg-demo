@@ -371,8 +371,11 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 /* ── ヘッダ ── */
+.booking-table thead {
+  background: #0d1019;
+}
 .booking-table thead th {
-  position: sticky;
+  position: static;
   top: 0;
   background: #0d1019;
   color: var(--muted);
