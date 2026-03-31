@@ -153,6 +153,7 @@ export async function initHalfModal(bookings, {
     selectedTr.classList.add('is-selected');
 
     modalSubtitle.textContent = `${b.time}　${b.customerName}`;
+    closeModal();
   });
 
   document.getElementById('btn-female-line').addEventListener('click', () => openPopup('femaleLine'));
