@@ -175,7 +175,7 @@ function moneyList(title, items, valueKey = 'value', target) {
       <td class="cell-brand">${b.label}</td>
       <td class="cell-id">${b.shopId}</td>
     </tr>`).join('');
-  card('ブランド（BRANDS）', `
+  card('ブランド', `
     <table class="master-tbl">
       <thead><tr><th>#</th><th>ブランド名</th><th>shopId</th></tr></thead>
       <tbody>${rows}</tbody>
@@ -191,24 +191,24 @@ function moneyList(title, items, valueKey = 'value', target) {
       <td class="cell-id">${c.shopId}</td>
       <td class="cell-id">${c.companionId}</td>
     </tr>`).join('');
-  card('女性（CAST_OPTIONS）', `
+  card('女性', `
     <table class="master-tbl">
       <thead><tr><th>#</th><th>名前</th><th>ブランド</th><th>shopId</th><th>companionId</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`, row1);
 }
 
-idLabelList('担当スタッフ（STAFF_OPTIONS）', STAFF_OPTIONS, row1);
-idLabelList('行き車 / 帰り車（CAR_OPTIONS）', CAR_OPTIONS, row1);
+idLabelList('担当スタッフ', STAFF_OPTIONS, row1);
+idLabelList('ドライバー', CAR_OPTIONS, row1);
 
 // ── 2段目: 媒体 / デリ区分 ───────────────────────────────────────────────────
 
-idLabelList('媒体（MEDIA_OPTIONS）', MEDIA_OPTIONS, row2);
-idLabelList('デリ区分（DELIVERY_TYPE_OPTIONS）', DELIVERY_TYPE_OPTIONS, row2);
+idLabelList('媒体', MEDIA_OPTIONS, row2);
+idLabelList('デリ区分', DELIVERY_TYPE_OPTIONS, row2);
 
 // ── 3段目: 交通費 / 割引 ─────────────────────────────────────────────────────
 
-moneyList('交通費（TRANSPORT_FEE_OPTIONS）', TRANSPORT_FEE_OPTIONS, 'value', row3);
+moneyList('交通費', TRANSPORT_FEE_OPTIONS, 'value', row3);
 
 {
   const rows = DISCOUNT_OPTIONS.map(o => `
@@ -221,7 +221,7 @@ moneyList('交通費（TRANSPORT_FEE_OPTIONS）', TRANSPORT_FEE_OPTIONS, 'value'
         return b ? `<span class="badge-nom">${b.label}</span>` : '';
       }).join('')}</td>
     </tr>`).join('');
-  card('割引（DISCOUNT_OPTIONS）', `
+  card('割引', `
     <table class="master-tbl">
       <thead><tr><th>ID</th><th>ラベル</th><th>金額</th><th>適用ブランド</th></tr></thead>
       <tbody>${rows}</tbody>
@@ -244,7 +244,7 @@ moneyList('交通費（TRANSPORT_FEE_OPTIONS）', TRANSPORT_FEE_OPTIONS, 'value'
         </tr>`),
     ];
   }).join('');
-  card('ブランドごとのコース（COURSE_OPTIONS）', `
+  card('コース', `
     <table class="master-tbl">
       <thead><tr><th>ID</th><th>ラベル</th><th>時間</th><th>料金</th></tr></thead>
       <tbody>${rows}</tbody>
@@ -266,7 +266,7 @@ moneyList('交通費（TRANSPORT_FEE_OPTIONS）', TRANSPORT_FEE_OPTIONS, 'value'
         </tr>`),
     ];
   }).join('');
-  card('ブランドごとのOP（OP_OPTIONS）', `
+  card('OP', `
     <table class="master-tbl">
       <thead><tr><th>ID</th><th>ラベル</th><th>料金</th></tr></thead>
       <tbody>${rows}</tbody>
@@ -287,15 +287,15 @@ moneyList('交通費（TRANSPORT_FEE_OPTIONS）', TRANSPORT_FEE_OPTIONS, 'value'
       <td class="cell-money">${v.nominationFee ? '¥' + v.nominationFee.toLocaleString('ja-JP') : '<span style="color:var(--dim)">-</span>'}</td>
       <td class="cell-money">${v.specialNominationFee ? '¥' + v.specialNominationFee.toLocaleString('ja-JP') : '<span style="color:var(--dim)">-</span>'}</td>
     </tr>`).join('');
-  card('指名区分（NOMINATIONS）', `
+  card('指名区分', `
     <table class="master-tbl">
       <thead><tr><th>指名区分</th><th>適用ブランド</th><th>入会金</th><th>指名料</th><th>特別指名料</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`, rowWide);
 }
 
-// ── 7段目: ブランドごとの延長 ────────────────────────────────────────────────
-
+// ── 7段目: 延長 ────────────────────────────────────────────────
+  
 {
   const rows = Object.entries(EXTENSION_OPTIONS).flatMap(([shopId, exts]) => {
     const brandLabel = BRANDS.find(b => b.shopId === shopId)?.label || shopId;
@@ -310,7 +310,7 @@ moneyList('交通費（TRANSPORT_FEE_OPTIONS）', TRANSPORT_FEE_OPTIONS, 'value'
         </tr>`),
     ];
   }).join('');
-  card('ブランドごとの延長（EXTENSION_OPTIONS）', `
+  card('延長', `
     <table class="master-tbl">
       <thead><tr><th>ID</th><th>ラベル</th><th>時間</th><th>料金</th></tr></thead>
       <tbody>${rows}</tbody>

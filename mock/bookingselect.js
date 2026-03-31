@@ -4,11 +4,13 @@
 
 export const CAR_OPTIONS = [
   { id: 'car_00', label: 'なし' },
-  { id: 'car_01', label: '田中' },
-  { id: 'car_02', label: '鈴木' },
-  { id: 'car_03', label: '山本' },
-  { id: 'car_04', label: '佐々木' },
-  { id: 'car_05', label: '中村' },
+  { id: 'car_01', label: '富安ドライバー' },
+  { id: 'car_02', label: '鉢呂ドライバー' },
+  { id: 'car_03', label: '田中ドライバー' },
+  { id: 'car_04', label: '大野ドライバー' },
+  { id: 'car_05', label: '室崎ドライバー' },
+  { id: 'car_04', label: '高橋ドライバー' },
+  { id: 'car_05', label: '入江ドライバー' },
 ];
 
 export const STAFF_OPTIONS = [
@@ -20,8 +22,8 @@ export const STAFF_OPTIONS = [
 ];
 
 export const MEDIA_OPTIONS = [
-  { id: 'media_00', label: 'ヘブン' },
-  { id: 'media_01', label: 'デリヘルEVO' },
+  { id: 'media_00', label: 'ヘブンネット' },
+  { id: 'media_01', label: 'kaku-butsu' },
   { id: 'media_02', label: 'ネット予約' },
   { id: 'media_03', label: '電話' },
   { id: 'media_04', label: 'その他' },
@@ -35,9 +37,9 @@ export const DELIVERY_TYPE_OPTIONS = [
 
 /** ブランド { label, shopId } */
 export const BRANDS = [
-  { label: 'ブランドA', shopId: '01' },
-  { label: 'ブランドB', shopId: '02' },
-  { label: 'ブランドC', shopId: '03' },
+  { label: 'ごほうび', shopId: '01' },
+  { label: 'ぐっすり', shopId: '02' },
+  { label: '回春', shopId: '03' },
   { label: 'ブランドD', shopId: '04' },
 ];
 
@@ -55,19 +57,19 @@ export const CAST_OPTIONS = [
   { label: 'さくら',  shopId: '03', companionId: '104' },
   { label: 'れい',    shopId: '03', companionId: '108' },
   { label: 'つきの',  shopId: '03', companionId: '112' },
-  { label: 'ひなた',  shopId: '04', companionId: '106' },
-  { label: 'あやか',  shopId: '04', companionId: '111' },
+  { label: 'ひなた',  shopId: '03', companionId: '106' },
+  { label: 'あやか',  shopId: '03', companionId: '111' },
 ];
 
 /** 指名区分 { brands, membershipFee, nominationFee, specialNominationFee }
  *  brands は shopId の配列 */
 export const NOMINATIONS = {
   'フリー': {
-    brands: ['01', '02', '03', '04'],
+    brands: ['01', '02', '03'],
     membershipFee: 0, nominationFee: 0, specialNominationFee: 0,
   },
   '新規': {
-    brands: ['01', '02', '03', '04'],
+    brands: ['01', '02', '03'],
     membershipFee: 3000, nominationFee: 0, specialNominationFee: 0,
   },
   '仮指名': {
@@ -75,11 +77,11 @@ export const NOMINATIONS = {
     membershipFee: 0, nominationFee: 1000, specialNominationFee: 0,
   },
   '指名': {
-    brands: ['01', '02', '03', '04'],
+    brands: ['01', '02', '03'],
     membershipFee: 0, nominationFee: 2000, specialNominationFee: 0,
   },
   '本指名': {
-    brands: ['01', '02', '03', '04'],
+    brands: ['01', '02', '03'],
     membershipFee: 0, nominationFee: 0, specialNominationFee: 3000,
   },
   'VIP': {
@@ -107,11 +109,6 @@ export const COURSE_OPTIONS = {
     { id: 'course_03_02', label: '120分', duration: 120, price: 26000 },
     { id: 'course_03_03', label: '180分', duration: 180, price: 40000 },
   ],
-  '04': [
-    { id: 'course_04_00', label: '60分',  duration: 60,  price: 12000 },
-    { id: 'course_04_01', label: '90分',  duration: 90,  price: 18000 },
-    { id: 'course_04_02', label: '120分', duration: 120, price: 24000 },
-  ],
 };
 
 /** ブランド(shopId)ごとの延長 { id, label, duration(分), price(円) } */
@@ -132,11 +129,6 @@ export const EXTENSION_OPTIONS = {
     { id: 'ext_03_01', label: '30分', duration: 30, price: 7000 },
     { id: 'ext_03_02', label: '60分', duration: 60, price: 12000 },
     { id: 'ext_03_03', label: '90分', duration: 90, price: 17000 },
-  ],
-  '04': [
-    { id: 'ext_04_00', label: 'なし', duration: 0,  price: 0 },
-    { id: 'ext_04_01', label: '30分', duration: 30, price: 5000 },
-    { id: 'ext_04_02', label: '60分', duration: 60, price: 9000 },
   ],
 };
 
@@ -159,10 +151,6 @@ export const OP_OPTIONS = {
     { id: 'op_02', label: '撮影',  price: 3000 },
     { id: 'op_03', label: 'イラマ', price: 2000 },
   ],
-  '04': [
-    { id: 'op_00', label: 'NN',   price: 5000 },
-    { id: 'op_02', label: '撮影', price: 3000 },
-  ],
 };
 
 /** 交通費 { id, label, value(円) } */
@@ -179,8 +167,8 @@ export const TRANSPORT_FEE_OPTIONS = [
 
 /** 割引 { id, label, value(円, 正数), shopIds } — ブランドごとに適用できる割引が異なる */
 export const DISCOUNT_OPTIONS = [
-  { id: 'discount_00', label: 'なし',      value: 0,    shopIds: ['01', '02', '03', '04'] },
-  { id: 'discount_01', label: '-500円',   value: 500,  shopIds: ['01', '02', '03', '04'] },
+  { id: 'discount_00', label: 'なし',      value: 0,    shopIds: ['01', '02', '03'] },
+  { id: 'discount_01', label: '-500円',   value: 500,  shopIds: ['01', '02', '03'] },
   { id: 'discount_02', label: '-1,000円', value: 1000, shopIds: ['01', '02', '03'] },
   { id: 'discount_03', label: '-2,000円', value: 2000, shopIds: ['02', '03'] },
   { id: 'discount_04', label: '-3,000円', value: 3000, shopIds: ['03'] },
