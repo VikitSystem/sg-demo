@@ -204,11 +204,13 @@ if (document.getElementById('booking-tbody')) {
   function applyFilter() {
     const brandLabel  = document.getElementById('filter-brand').value;
     const staffLabel  = document.getElementById('filter-staff').value;
+    const completed   = document.getElementById('filter-completed').value;
     const brandShopId = BRANDS.find(br => br.label === brandLabel)?.shopId || '';
     const staffId     = STAFF_OPTIONS.find(o => o.label === staffLabel)?.id || '';
     const filtered = bookings.filter(b =>
       (!brandShopId || b.shopId === brandShopId) &&
-      (!staffId || b.staffId === staffId)
+      (!staffId || b.staffId === staffId) &&
+      (completed === '' || (completed === 'done' ? b.completed : !b.completed))
     );
     document.getElementById('booking-tbody').innerHTML = filtered.map(renderRow).join('');
     document.getElementById('booking-count').textContent = filtered.length;
@@ -218,6 +220,7 @@ if (document.getElementById('booking-tbody')) {
 
   document.getElementById('filter-brand').addEventListener('change', applyFilter);
   document.getElementById('filter-staff').addEventListener('change', applyFilter);
+  document.getElementById('filter-completed').addEventListener('change', applyFilter);
 
   // ── ハーフモーダル初期化 ───────────────────────────────────────────────────
 

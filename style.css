@@ -382,9 +382,11 @@ textarea { resize: vertical; min-height: 80px; }
   text-transform: uppercase;
   padding: 10px 12px;
   border-bottom: 1px solid var(--line-2);
+  border-right: 1px solid rgba(255,255,255,0.06);
   text-align: left;
   z-index: 2;
 }
+.booking-table thead th:last-child { border-right: none; }
 .booking-table thead th .th-sub {
   font-size: 9px;
   font-weight: 400;
@@ -404,10 +406,12 @@ textarea { resize: vertical; min-height: 80px; }
 .booking-table tbody td {
   padding: 9px 12px;
   border-bottom: 1px solid var(--line);
+  border-right: 1px solid rgba(255,255,255,0.06);
   color: var(--text);
   vertical-align: middle;
   background: var(--panel-row);
 }
+.booking-table tbody td:last-child { border-right: none; }
 .booking-table tbody tr:nth-child(even) td { background: #161c2e; }
 .booking-table tbody tr:nth-child(even) td.col-sticky { background: #161c2e; }
 .booking-table tbody tr:last-child td { border-bottom: none; }
@@ -482,8 +486,8 @@ textarea { resize: vertical; min-height: 80px; }
 
 /* ── 時刻・金額 ── */
 .cell-time  { font-variant-numeric: tabular-nums; color: var(--cyan); }
-.cell-money { font-variant-numeric: tabular-nums; color: var(--green); text-align: right; }
-.cell-money-neg { font-variant-numeric: tabular-nums; color: var(--red); text-align: right; }
+.cell-money { font-variant-numeric: tabular-nums; color: var(--green); text-align: left; }
+.cell-money-neg { font-variant-numeric: tabular-nums; color: var(--red); text-align: left; }
 .cell-dim   { color: var(--dim); }
 
 /* ── 備考列（1行固定） ── */

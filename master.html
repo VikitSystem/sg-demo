@@ -8,9 +8,17 @@
   <style>
     .master-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
       gap: 20px;
       margin-top: 24px;
+    }
+    .master-grid--row1 {
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    }
+    .master-grid--half {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .master-grid--wide {
+      grid-template-columns: 1fr;
     }
     .master-card {
       background: var(--panel);
@@ -43,18 +51,22 @@
       color: var(--muted);
       background: var(--deep);
       border-bottom: 1px solid var(--line);
+      border-right: 1px solid rgba(255,255,255,0.06);
       white-space: nowrap;
     }
+    .master-tbl thead th:last-child { border-right: none; }
     .master-tbl tbody td {
       padding: 7px 12px;
       color: var(--text);
       border-bottom: 1px solid var(--line);
+      border-right: 1px solid rgba(255,255,255,0.06);
       white-space: nowrap;
     }
+    .master-tbl tbody td:last-child { border-right: none; }
     .master-tbl tbody tr:last-child td { border-bottom: none; }
     .master-tbl tbody tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
     .master-tbl tbody tr:hover td { background: var(--hover); }
-    .cell-money { color: var(--green); text-align: right; font-variant-numeric: tabular-nums; }
+    .cell-money { color: var(--green); text-align: left; font-variant-numeric: tabular-nums; }
     .cell-id    { color: var(--dim); font-family: monospace; font-size: 11px; }
     .cell-brand { color: var(--cyan); }
     .badge-nom {
@@ -65,10 +77,6 @@
       background: rgba(122,162,255,0.12);
       color: var(--blue);
       margin: 1px 2px;
-    }
-    /* ブランド別テーブルはフル幅カード */
-    .master-card--wide {
-      grid-column: 1 / -1;
     }
     .brand-group-head td {
       background: rgba(98,208,255,0.06) !important;
@@ -100,7 +108,10 @@
     <p>※ こちらは仮画面です。bookingselect.js のオプション定義を表示しています。</p>
   </div>
 
-  <div class="master-grid" id="master-grid"></div>
+  <div class="master-grid master-grid--row1" id="grid-row1"></div>
+  <div class="master-grid master-grid--half"  id="grid-row2"></div>
+  <div class="master-grid master-grid--half"  id="grid-row3"></div>
+  <div class="master-grid master-grid--wide"  id="grid-wide"></div>
 </main>
 
 <script type="module">
@@ -111,22 +122,24 @@ import {
   DELIVERY_TYPE_OPTIONS, MEDIA_OPTIONS, CAST_OPTIONS,
 } from './mock/bookingselect.js';
 
-const grid = document.getElementById('master-grid');
+const row1    = document.getElementById('grid-row1');
+const row2    = document.getElementById('grid-row2');
+const row3    = document.getElementById('grid-row3');
+const rowWide = document.getElementById('grid-wide');
 
 // ── ヘルパー ────────────────────────────────────────────────────────────────
 
-function card(title, innerHTML, wide = false) {
+function card(title, innerHTML, target) {
   const div = document.createElement('div');
-  div.className = 'master-card' + (wide ? ' master-card--wide' : '');
+  div.className = 'master-card';
   div.innerHTML = `
     <div class="master-card__head">${title}</div>
     <div class="master-card__body">${innerHTML}</div>
   `;
-  grid.appendChild(div);
+  target.appendChild(div);
 }
 
-// { id, label } オブジェクト配列用
-function idLabelList(title, items) {
+function idLabelList(title, items, target) {
   const rows = items.map(o => `
     <tr>
       <td class="cell-id">${o.id}</td>
@@ -136,11 +149,10 @@ function idLabelList(title, items) {
     <table class="master-tbl">
       <thead><tr><th>ID</th><th>ラベル</th></tr></thead>
       <tbody>${rows}</tbody>
-    </table>`);
+    </table>`, target);
 }
 
-// { id, label, value/price } オブジェクト配列用
-function moneyList(title, items, valueKey = 'value') {
+function moneyList(title, items, valueKey = 'value', target) {
   const rows = items.map(o => `
     <tr>
       <td class="cell-id">${o.id}</td>
@@ -151,13 +163,11 @@ function moneyList(title, items, valueKey = 'value') {
     <table class="master-tbl">
       <thead><tr><th>ID</th><th>ラベル</th><th>金額</th></tr></thead>
       <tbody>${rows}</tbody>
-    </table>`);
+    </table>`, target);
 }
 
-// ── 1. 行き車・帰り車 ────────────────────────────────────────────────────────
-idLabelList('行き車 / 帰り車（CAR_OPTIONS）', CAR_OPTIONS);
+// ── 1段目: ブランド / 女性 / 担当スタッフ / 行き車・帰り車 ──────────────────
 
-// ── 2. ブランド ──────────────────────────────────────────────────────────────
 {
   const rows = BRANDS.map((b, i) => `
     <tr>
@@ -169,13 +179,9 @@ idLabelList('行き車 / 帰り車（CAR_OPTIONS）', CAR_OPTIONS);
     <table class="master-tbl">
       <thead><tr><th>#</th><th>ブランド名</th><th>shopId</th></tr></thead>
       <tbody>${rows}</tbody>
-    </table>`);
+    </table>`, row1);
 }
 
-// ── 3. 担当スタッフ ──────────────────────────────────────────────────────────
-idLabelList('担当スタッフ（STAFF_OPTIONS）', STAFF_OPTIONS);
-
-// ── 4. 女性（キャスト） ──────────────────────────────────────────────────────
 {
   const rows = CAST_OPTIONS.map((c, i) => `
     <tr>
@@ -189,40 +195,21 @@ idLabelList('担当スタッフ（STAFF_OPTIONS）', STAFF_OPTIONS);
     <table class="master-tbl">
       <thead><tr><th>#</th><th>名前</th><th>ブランド</th><th>shopId</th><th>companionId</th></tr></thead>
       <tbody>${rows}</tbody>
-    </table>`);
+    </table>`, row1);
 }
 
-// ── 5. 媒体 ─────────────────────────────────────────────────────────────────
-idLabelList('媒体（MEDIA_OPTIONS）', MEDIA_OPTIONS);
+idLabelList('担当スタッフ（STAFF_OPTIONS）', STAFF_OPTIONS, row1);
+idLabelList('行き車 / 帰り車（CAR_OPTIONS）', CAR_OPTIONS, row1);
 
-// ── 6. デリ区分 ─────────────────────────────────────────────────────────────
-idLabelList('デリ区分（DELIVERY_TYPE_OPTIONS）', DELIVERY_TYPE_OPTIONS);
+// ── 2段目: 媒体 / デリ区分 ───────────────────────────────────────────────────
 
-// ── 7. OP（ブランドごと） ────────────────────────────────────────────────────
-{
-  const rows = Object.entries(OP_OPTIONS).flatMap(([shopId, ops]) => {
-    const brandLabel = BRANDS.find(b => b.shopId === shopId)?.label || shopId;
-    return [
-      `<tr class="brand-group-head"><td colspan="3">${brandLabel}</td></tr>`,
-      ...ops.map(op => `
-        <tr>
-          <td class="cell-id">${op.id}</td>
-          <td>${op.label}</td>
-          <td class="cell-money">¥${op.price.toLocaleString('ja-JP')}</td>
-        </tr>`),
-    ];
-  }).join('');
-  card('ブランドごとのOP（OP_OPTIONS）', `
-    <table class="master-tbl">
-      <thead><tr><th>ID</th><th>ラベル</th><th>料金</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`, true);
-}
+idLabelList('媒体（MEDIA_OPTIONS）', MEDIA_OPTIONS, row2);
+idLabelList('デリ区分（DELIVERY_TYPE_OPTIONS）', DELIVERY_TYPE_OPTIONS, row2);
 
-// ── 8. 交通費 ────────────────────────────────────────────────────────────────
-moneyList('交通費（TRANSPORT_FEE_OPTIONS）', TRANSPORT_FEE_OPTIONS, 'value');
+// ── 3段目: 交通費 / 割引 ─────────────────────────────────────────────────────
 
-// ── 9. 割引 ─────────────────────────────────────────────────────────────────
+moneyList('交通費（TRANSPORT_FEE_OPTIONS）', TRANSPORT_FEE_OPTIONS, 'value', row3);
+
 {
   const rows = DISCOUNT_OPTIONS.map(o => `
     <tr>
@@ -238,30 +225,11 @@ moneyList('交通費（TRANSPORT_FEE_OPTIONS）', TRANSPORT_FEE_OPTIONS, 'value'
     <table class="master-tbl">
       <thead><tr><th>ID</th><th>ラベル</th><th>金額</th><th>適用ブランド</th></tr></thead>
       <tbody>${rows}</tbody>
-    </table>`);
+    </table>`, row3);
 }
 
-// ── 10. 指名区分（NOMINATIONS） ──────────────────────────────────────────────
-{
-  const rows = Object.entries(NOMINATIONS).map(([nom, v]) => `
-    <tr>
-      <td>${nom}</td>
-      <td>${v.brands.map(sid => {
-        const b = BRANDS.find(b => b.shopId === sid);
-        return `<span class="badge-nom">${b ? b.label : sid}</span>`;
-      }).join('')}</td>
-      <td class="cell-money">${v.membershipFee ? '¥' + v.membershipFee.toLocaleString('ja-JP') : '<span style="color:var(--dim)">-</span>'}</td>
-      <td class="cell-money">${v.nominationFee ? '¥' + v.nominationFee.toLocaleString('ja-JP') : '<span style="color:var(--dim)">-</span>'}</td>
-      <td class="cell-money">${v.specialNominationFee ? '¥' + v.specialNominationFee.toLocaleString('ja-JP') : '<span style="color:var(--dim)">-</span>'}</td>
-    </tr>`).join('');
-  card('指名区分（NOMINATIONS）', `
-    <table class="master-tbl">
-      <thead><tr><th>指名区分</th><th>適用ブランド</th><th>入会金</th><th>指名料</th><th>特別指名料</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`, true);
-}
+// ── 4段目: ブランドごとのコース ──────────────────────────────────────────────
 
-// ── 13. ブランドごとのコース ─────────────────────────────────────────────────
 {
   const rows = Object.entries(COURSE_OPTIONS).flatMap(([shopId, courses]) => {
     const brandLabel = BRANDS.find(b => b.shopId === shopId)?.label || shopId;
@@ -280,10 +248,54 @@ moneyList('交通費（TRANSPORT_FEE_OPTIONS）', TRANSPORT_FEE_OPTIONS, 'value'
     <table class="master-tbl">
       <thead><tr><th>ID</th><th>ラベル</th><th>時間</th><th>料金</th></tr></thead>
       <tbody>${rows}</tbody>
-    </table>`, true);
+    </table>`, rowWide);
 }
 
-// ── 14. ブランドごとの延長 ───────────────────────────────────────────────────
+// ── 5段目: ブランドごとのOP ──────────────────────────────────────────────────
+
+{
+  const rows = Object.entries(OP_OPTIONS).flatMap(([shopId, ops]) => {
+    const brandLabel = BRANDS.find(b => b.shopId === shopId)?.label || shopId;
+    return [
+      `<tr class="brand-group-head"><td colspan="3">${brandLabel}</td></tr>`,
+      ...ops.map(op => `
+        <tr>
+          <td class="cell-id">${op.id}</td>
+          <td>${op.label}</td>
+          <td class="cell-money">¥${op.price.toLocaleString('ja-JP')}</td>
+        </tr>`),
+    ];
+  }).join('');
+  card('ブランドごとのOP（OP_OPTIONS）', `
+    <table class="master-tbl">
+      <thead><tr><th>ID</th><th>ラベル</th><th>料金</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`, rowWide);
+}
+
+// ── 6段目: 指名区分 ──────────────────────────────────────────────────────────
+
+{
+  const rows = Object.entries(NOMINATIONS).map(([nom, v]) => `
+    <tr>
+      <td>${nom}</td>
+      <td>${v.brands.map(sid => {
+        const b = BRANDS.find(b => b.shopId === sid);
+        return `<span class="badge-nom">${b ? b.label : sid}</span>`;
+      }).join('')}</td>
+      <td class="cell-money">${v.membershipFee ? '¥' + v.membershipFee.toLocaleString('ja-JP') : '<span style="color:var(--dim)">-</span>'}</td>
+      <td class="cell-money">${v.nominationFee ? '¥' + v.nominationFee.toLocaleString('ja-JP') : '<span style="color:var(--dim)">-</span>'}</td>
+      <td class="cell-money">${v.specialNominationFee ? '¥' + v.specialNominationFee.toLocaleString('ja-JP') : '<span style="color:var(--dim)">-</span>'}</td>
+    </tr>`).join('');
+  card('指名区分（NOMINATIONS）', `
+    <table class="master-tbl">
+      <thead><tr><th>指名区分</th><th>適用ブランド</th><th>入会金</th><th>指名料</th><th>特別指名料</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`, rowWide);
+}
+
+// ── 7段目: ブランドごとの延長 ────────────────────────────────────────────────
+
 {
   const rows = Object.entries(EXTENSION_OPTIONS).flatMap(([shopId, exts]) => {
     const brandLabel = BRANDS.find(b => b.shopId === shopId)?.label || shopId;
@@ -302,7 +314,7 @@ moneyList('交通費（TRANSPORT_FEE_OPTIONS）', TRANSPORT_FEE_OPTIONS, 'value'
     <table class="master-tbl">
       <thead><tr><th>ID</th><th>ラベル</th><th>時間</th><th>料金</th></tr></thead>
       <tbody>${rows}</tbody>
-    </table>`, true);
+    </table>`, rowWide);
 }
 </script>
 
