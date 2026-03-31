@@ -312,6 +312,40 @@ if (document.getElementById('booking-tbody')) {
 
   // ── テーブル描画 ──────────────────────────────────────────────────────────
 
+  function renderSummary() {
+    const extraCols = ['J','S','F','JG×','JT×','JS×','FG×','FS×','FT×'];
+    let totalAmount = 0, totalCount = 0;
+    const rows = BRANDS.map(br => {
+      const brs = bookings.filter(b => b.shopId === br.shopId);
+      const amount = brs.reduce((s, b) => {
+        const bd = calcBreakdown(b);
+        return s + bd.coursePrice + bd.extensionPrice + bd.opTotal;
+      }, 0);
+      totalAmount += amount;
+      totalCount  += brs.length;
+      return `<tr>
+        <td>${br.label}</td>
+        <td class="cell-money">¥${amount.toLocaleString('ja-JP')}</td>
+        <td>${brs.length}</td>
+        ${extraCols.map(() => '<td class="cell-dim">0</td>').join('')}
+      </tr>`;
+    });
+    const totalRow = `<tr class="summary-total">
+      <td><strong>合計</strong></td>
+      <td class="cell-money"><strong>¥${totalAmount.toLocaleString('ja-JP')}</strong></td>
+      <td><strong>${totalCount}</strong></td>
+      ${extraCols.map(() => '<td class="cell-dim">0</td>').join('')}
+    </tr>`;
+    document.getElementById('summary-table').innerHTML = `
+      <table class="booking-table" style="margin-bottom:16px">
+        <thead><tr>
+          <th>ブランド</th><th>売上</th><th>本数</th>
+          ${extraCols.map(c => `<th>${c}</th>`).join('')}
+        </tr></thead>
+        <tbody>${rows.join('')}${totalRow}</tbody>
+      </table>`;
+  }
+
   function applyFilter() {
     const brandLabel  = document.getElementById('filter-brand').value;
     const staffLabel  = document.getElementById('filter-staff').value;
@@ -328,6 +362,7 @@ if (document.getElementById('booking-tbody')) {
   }
 
   applyFilter();
+  renderSummary();
 
   document.getElementById('filter-brand').addEventListener('change', applyFilter);
   document.getElementById('filter-staff').addEventListener('change', applyFilter);

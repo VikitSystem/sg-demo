@@ -63,29 +63,49 @@ export const CAST_OPTIONS = [
 /** 指名区分 { brands, membershipFee, nominationFee, specialNominationFee }
  *  brands は shopId の配列 */
 export const NOMINATIONS = {
-  'フリー': {
+  'Fフリー': {
+    brands: ['01', '02', '03'],
+    membershipFee: 1000, nominationFee: 3000, specialNominationFee: 0,
+  },
+  'Jフリー': {
+    brands: ['01', '02', '03'],
+    membershipFee: 0, nominationFee: 3000, specialNominationFee: 0,
+  },
+  'F指名': {
+    brands: ['01', '02', '03'],
+    membershipFee: 1000, nominationFee: 5000, specialNominationFee: 0,
+  },
+  'J指名': {
+    brands: ['01', '02', '03'],
+    membershipFee: 0, nominationFee: 5000, specialNominationFee: 0,
+  },
+  'S本指名': {
+    brands: ['01', '02', '03'],
+    membershipFee: 0, nominationFee: 8000, specialNominationFee: 0,
+  },
+  'JG×': {
     brands: ['01', '02', '03'],
     membershipFee: 0, nominationFee: 0, specialNominationFee: 0,
   },
-  '新規': {
+  'JT×': {
     brands: ['01', '02', '03'],
-    membershipFee: 3000, nominationFee: 0, specialNominationFee: 0,
+    membershipFee: 0, nominationFee: 0, specialNominationFee: 0,
   },
-  '仮指名': {
-    brands: ['01'],
-    membershipFee: 0, nominationFee: 1000, specialNominationFee: 0,
-  },
-  '指名': {
+  'JS×': {
     brands: ['01', '02', '03'],
-    membershipFee: 0, nominationFee: 2000, specialNominationFee: 0,
+    membershipFee: 0, nominationFee: 0, specialNominationFee: 0,
   },
-  '本指名': {
+  'FG×': {
     brands: ['01', '02', '03'],
-    membershipFee: 0, nominationFee: 0, specialNominationFee: 3000,
+    membershipFee: 0, nominationFee: 0, specialNominationFee: 0,
   },
-  'VIP': {
-    brands: ['03'],
-    membershipFee: 0, nominationFee: 0, specialNominationFee: 5000,
+  'FT×': {
+    brands: ['01', '02', '03'],
+    membershipFee: 0, nominationFee: 0, specialNominationFee: 0,
+  },
+  'FS×': {
+    brands: ['01', '02', '03'],
+    membershipFee: 0, nominationFee: 0, specialNominationFee: 0,
   },
 };
 
@@ -134,34 +154,38 @@ export const EXTENSION_OPTIONS = {
 /** ブランド(shopId)ごとのOP { id, label, price(円) } */
 export const OP_OPTIONS = {
   '01': [
-    { id: 'op_01_00', label: 'NN',    price: 5000 },
-    { id: 'op_01_01', label: '3P',    price: 8000 },
-    { id: 'op_01_02', label: '撮影',  price: 3000 },
-    { id: 'op_01_03', label: 'イラマ', price: 2000 },
+    { id: 'op_01_00', label: 'スマートワンド',    price: 3300 },
+    { id: 'op_01_01', label: 'トリップスキン',    price: 3300 },
+    { id: 'op_01_02', label: 'ノーパンパンスト',  price: 2200 },
+    { id: 'op_01_03', label: 'オナニー鑑賞', price: 2200 },
+    { id: 'op_01_03', label: '破廉恥', price: 5500 },
+    { id: 'op_01_03', label: '個人コス1', price: 1100 },
+    { id: 'op_01_03', label: '個人コス2', price: 2200 },
+    { id: 'op_01_03', label: '個人コス3', price: 3300 },
+    { id: 'op_01_03', label: '先行予約', price: 3300 },
   ],
   '02': [
-    { id: 'op_02_00', label: 'NN',   price: 5000 },
-    { id: 'op_02_01', label: '3P',   price: 8000 },
-    { id: 'op_02_02', label: '撮影', price: 3000 },
+    { id: 'op_02_00', label: '初級',   price: 3300 },
+    { id: 'op_02_01', label: '中級',   price: 5500 },
+    { id: 'op_02_02', label: '上級', price: 11000 },
+    { id: 'op_02_02', label: '先行予約', price: 3300 },
   ],
   '03': [
-    { id: 'op_03_00', label: 'NN',    price: 5000 },
-    { id: 'op_03_01', label: '3P',    price: 8000 },
-    { id: 'op_03_02', label: '撮影',  price: 3000 },
-    { id: 'op_03_03', label: 'イラマ', price: 2000 },
+    { id: 'op_03_00', label: '個人コス',    price: 5000 },
+    { id: 'op_03_01', label: '回春オプション1',    price: 8000 },
+    { id: 'op_03_02', label: '回春オプション2',  price: 3000 },
+    { id: 'op_03_03', label: '回春オプション3', price: 2000 },
   ],
 };
 
 /** 交通費 { id, label, value(円) } */
 export const TRANSPORT_FEE_OPTIONS = [
   { id: 'transport_00', label: 'なし',      value: 0 },
-  { id: 'transport_01', label: '400円',    value: 400 },
-  { id: 'transport_02', label: '500円',    value: 500 },
-  { id: 'transport_03', label: '600円',    value: 600 },
-  { id: 'transport_04', label: '700円',    value: 700 },
-  { id: 'transport_05', label: '800円',    value: 800 },
-  { id: 'transport_06', label: '1,000円', value: 1000 },
-  { id: 'transport_07', label: '1,500円', value: 1500 },
+  { id: 'transport_01', label: '500円',    value: 500 },
+  { id: 'transport_02', label: '2000円',    value: 2000 },
+  { id: 'transport_03', label: '3000円',    value: 3000 },
+  { id: 'transport_04', label: '4000円',    value: 4000 },
+  { id: 'transport_05', label: '5000円',    value: 5000 },
 ];
 
 /** 割引 { id, label, value(円, 正数), shopIds } — ブランドごとに適用できる割引が異なる */
