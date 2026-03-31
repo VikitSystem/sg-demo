@@ -1,0 +1,236 @@
+import { initHalfModal } from './booking/halfmodal.js';
+
+// ─── 列プリセット ─────────────────────────────────────────────────────────────
+// 列番号は index.html の <th> 順（1始まり）
+const PRESET_COLS = {
+  '監査項目': new Set([1,4,5,9,10,13,14,16,17,18,19,20,24,25,26,37,38,39,40,41,42,43,44,45]),
+  '連携項目': new Set([1,4,9,10,14,15,16,17,18,19,20,21,24,25,26,29,30,34,35,36,37]),
+  '作業項目': new Set([1,2,3,4,5,7,9,10,11,12,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,37]),
+};
+const TOTAL_COLS = 45;
+const activePresets = new Set(['全項目']);
+
+function applyColVisibility() {
+  let styleEl = document.getElementById('col-preset-style');
+  if (!styleEl) {
+    styleEl = document.createElement('style');
+    styleEl.id = 'col-preset-style';
+    document.head.appendChild(styleEl);
+  }
+  if (activePresets.has('全項目')) { styleEl.textContent = ''; return; }
+  const shown = new Set();
+  activePresets.forEach(name => PRESET_COLS[name].forEach(i => shown.add(i)));
+  const hidden = [];
+  for (let i = 1; i <= TOTAL_COLS; i++) { if (!shown.has(i)) hidden.push(i); }
+  styleEl.textContent = hidden.map(i =>
+    `.booking-table th:nth-child(${i}), .booking-table td:nth-child(${i}) { display: none; }`
+  ).join('\n');
+}
+
+document.querySelectorAll('.preset-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const name = btn.dataset.preset;
+    if (name === '全項目') {
+      activePresets.clear();
+      activePresets.add('全項目');
+    } else {
+      activePresets.delete('全項目');
+      if (activePresets.has(name)) {
+        activePresets.delete(name);
+        if (activePresets.size === 0) activePresets.add('全項目');
+      } else {
+        activePresets.add(name);
+      }
+    }
+    document.querySelectorAll('.preset-btn').forEach(b =>
+      b.classList.toggle('is-active', activePresets.has(b.dataset.preset))
+    );
+    applyColVisibility();
+  });
+});
+
+// ─── index.html: 予約一覧テーブル ────────────────────────────────────────────
+
+if (document.getElementById('booking-tbody')) {
+  const { bookings } = await import('./mock/bookings.js');
+  const {
+    CAR_OPTIONS, BRANDS, STAFF_OPTIONS,
+    NOMINATIONS, COURSE_OPTIONS, EXTENSION_OPTIONS,
+    OP_OPTIONS, TRANSPORT_FEE_OPTIONS, DISCOUNT_OPTIONS,
+    DELIVERY_TYPE_OPTIONS, MEDIA_OPTIONS, CAST_OPTIONS,
+  } = await import('./mock/bookingselect.js');
+
+  // ── テーブル描画ヘルパー ──────────────────────────────────────────────────
+
+  function dim(val) {
+    if (val == null || val === '') return `<span class="cell-dim">-</span>`;
+    return val;
+  }
+
+  function chkBox(checked, disabled = false) {
+    if (disabled) {
+      return checked
+        ? `<span class="chk-done chk-done--on">✓</span>`
+        : `<span class="chk-done chk-done--off">−</span>`;
+    }
+    return `<input type="checkbox" class="tbl-chk"${checked ? ' checked' : ''}>`;
+  }
+
+  function walletCell(val) {
+    if (val == null || val === '') return `<span class="cell-dim">-</span>`;
+    return `<span class="wallet-val">${val}</span>`;
+  }
+
+  function opText(shopId, options) {
+    if (!options || options.length === 0) return `<span class="cell-dim">-</span>`;
+    const currentOps = OP_OPTIONS[shopId] || [];
+    return options.map(id => {
+      const op = currentOps.find(o => o.id === id);
+      return op ? `<span class="op-tag">${op.label}</span>` : '';
+    }).filter(Boolean).join('');
+  }
+
+  function carSelect(val, disabled = false) {
+    const opts = CAR_OPTIONS.map(o =>
+      `<option value="${o.id}"${val === o.id ? ' selected' : ''}>${o.label}</option>`
+    ).join('');
+    return `<select class="tbl-select"${disabled ? ' disabled' : ''}>${opts}</select>`;
+  }
+
+  function truncate(val) {
+    if (val == null || val === '') return `<span class="cell-dim">-</span>`;
+    const text = val.replace(/\n/g, ' ').trim();
+    return text.length > 10 ? text.slice(0, 10) + '......' : text;
+  }
+
+  function noteCell(val) {
+    return `<td class="cell-note">${truncate(val)}</td>`;
+  }
+
+  function calcBreakdown(b) {
+    const fees       = NOMINATIONS[b.nomination] || { membershipFee: 0, nominationFee: 0, specialNominationFee: 0 };
+    const courseOpts = COURSE_OPTIONS[b.shopId] || [];
+    const extOpts    = EXTENSION_OPTIONS[b.shopId] || [];
+    const currentOps = OP_OPTIONS[b.shopId] || [];
+    const selCourse  = courseOpts.find(c => c.id === b.courseId) || { price: 0 };
+    const selExt     = extOpts.find(e => e.id === b.extensionId) || { price: 0 };
+    const opTotal    = (b.options || []).reduce((sum, id) => {
+      const op = currentOps.find(o => o.id === id);
+      return sum + (op ? op.price : 0);
+    }, 0);
+    return {
+      membershipFee:        fees.membershipFee,
+      nominationFee:        fees.nominationFee,
+      specialNominationFee: fees.specialNominationFee,
+      coursePrice:          selCourse.price,
+      extensionPrice:       selExt.price,
+      opTotal,
+    };
+  }
+
+  function priceCell(val, negative = false) {
+    if (val === 0) return `<td class="cell-dim">-</td>`;
+    return negative
+      ? `<td class="cell-money-neg">-¥${Math.abs(val).toLocaleString('ja-JP')}</td>`
+      : `<td class="cell-money">¥${val.toLocaleString('ja-JP')}</td>`;
+  }
+
+  function renderRow(b, index) {
+    const done = b.completed;
+    const bd   = calcBreakdown(b);
+
+    const brandLabel    = BRANDS.find(br => br.shopId === b.shopId)?.label || '';
+    const staffLabel    = STAFF_OPTIONS.find(o => o.id === b.staffId)?.label || '';
+    const mediaLabel    = MEDIA_OPTIONS.find(o => o.id === b.mediaId)?.label || '';
+    const castLabel     = CAST_OPTIONS.find(c => c.companionId === b.companionId)?.label || '';
+    const courseLabel   = (COURSE_OPTIONS[b.shopId] || []).find(c => c.id === b.courseId)?.label || '';
+    const extLabel      = (EXTENSION_OPTIONS[b.shopId] || []).find(e => e.id === b.extensionId)?.label || '';
+    const deliveryLabel = DELIVERY_TYPE_OPTIONS.find(o => o.id === b.deliveryTypeId)?.label || '';
+    const tfValue       = TRANSPORT_FEE_OPTIONS.find(o => o.id === b.transportFeeId)?.value ?? null;
+    const discValue     = DISCOUNT_OPTIONS.find(o => o.id === b.discountId)?.value ?? null;
+
+    return `
+      <tr data-index="${index}"${done ? ' class="is-completed"' : ''}>
+        <td class="col-sticky cell-no cell-dim">${index + 1}</td>
+        <td class="cell-chk">${chkBox(b.dentatsu, done)}</td>
+        <td class="cell-chk">${chkBox(b.heavenCheck, done)}</td>
+        <td>${dim(brandLabel)}</td>
+        <td>${dim(staffLabel)}</td>
+        <td class="cell-dim">${b.tel1 ? `${b.tel1}-${b.tel2}-${b.tel3}` : '<span class="cell-dim">-</span>'}</td>
+        <td class="cell-chk">${chkBox(b.confirmedCall, done)}</td>
+        <td>${dim(b.customerName)}</td>
+        <td>${dim(b.nomination)}</td>
+        <td>${mediaLabel ? `${mediaLabel}${b.mediaDate ? '<br><span class="cell-dim">' + b.mediaDate + '</span>' : ''}` : '<span class="cell-dim">-</span>'}</td>
+        <td class="cell-chk">${walletCell(b.wallet)}</td>
+        <td class="cell-chk">${chkBox(b.survey, done)}</td>
+        <td class="cell-chk">${chkBox(b.salesReceipt, done)}</td>
+        <td>${dim(castLabel)}</td>
+        <td class="cell-time">${b.time}</td>
+        <td>${dim(courseLabel)}</td>
+        <td>${dim(extLabel)}</td>
+        <td class="cell-money">¥${b.amount.toLocaleString('ja-JP')}</td>
+        <td class="${b.inTime ? 'cell-time' : ''}">${dim(b.inTime)}</td>
+        <td class="${b.outTime ? 'cell-time' : ''}">${dim(b.outTime)}</td>
+        <td>${dim(deliveryLabel)}</td>
+        <td class="cell-location">${truncate(b.location)}${b.address ? `<br><span class="cell-dim cell-location__addr">${truncate(b.address)}</span>` : ''}</td>
+        <td>${dim(b.roomNo)}</td>
+        <td>${opText(b.shopId, b.options)}</td>
+        <td>${tfValue != null ? `<span class="cell-money">¥${tfValue.toLocaleString('ja-JP')}</span>` : '<span class="cell-dim">-</span>'}</td>
+        <td>${discValue != null ? `<span class="cell-money-neg">-¥${Math.abs(discValue).toLocaleString('ja-JP')}</span>` : '<span class="cell-dim">-</span>'}</td>
+        ${noteCell(b.castNote)}
+        ${noteCell(b.storeNote)}
+        <td>${carSelect(b.carGoingId, done)}</td>
+        <td>${carSelect(b.carReturnId, done)}</td>
+        <td>${dim(b.travelDistance)}</td>
+        <td>${b.travelTime != null && b.travelTime !== '' ? `${b.travelTime}分` : '<span class="cell-dim">-</span>'}</td>
+        <td class="${b.plannedOutTime ? 'cell-time' : ''}">${dim(b.plannedOutTime)}</td>
+        <td class="cell-dim">${dim(b.shopId)}</td>
+        <td class="cell-dim">${dim(b.memberId)}</td>
+        <td class="cell-dim">${dim(b.companionId)}</td>
+        <td class="cell-sglink"><a href="${b.sgLink || 'https://sg-system.jp/'}" target="_blank" class="sg-link">${b.sgLink || 'https://sg-system.jp/'}</a></td>
+        ${priceCell(bd.membershipFee)}
+        ${priceCell(bd.nominationFee)}
+        ${priceCell(bd.specialNominationFee)}
+        ${priceCell(bd.coursePrice)}
+        ${priceCell(bd.extensionPrice)}
+        ${priceCell(bd.opTotal)}
+        ${priceCell(tfValue || 0)}
+        ${priceCell(discValue || 0, true)}
+      </tr>`;
+  }
+
+  // ── テーブル描画 ──────────────────────────────────────────────────────────
+
+  function applyFilter() {
+    const brandLabel  = document.getElementById('filter-brand').value;
+    const staffLabel  = document.getElementById('filter-staff').value;
+    const brandShopId = BRANDS.find(br => br.label === brandLabel)?.shopId || '';
+    const staffId     = STAFF_OPTIONS.find(o => o.label === staffLabel)?.id || '';
+    const filtered = bookings.filter(b =>
+      (!brandShopId || b.shopId === brandShopId) &&
+      (!staffId || b.staffId === staffId)
+    );
+    document.getElementById('booking-tbody').innerHTML = filtered.map(renderRow).join('');
+    document.getElementById('booking-count').textContent = filtered.length;
+  }
+
+  applyFilter();
+
+  document.getElementById('filter-brand').addEventListener('change', applyFilter);
+  document.getElementById('filter-staff').addEventListener('change', applyFilter);
+
+  // ── ハーフモーダル初期化 ───────────────────────────────────────────────────
+
+  const { openNewModal } = await initHalfModal(bookings, {
+    CAR_OPTIONS, BRANDS, STAFF_OPTIONS,
+    NOMINATIONS, COURSE_OPTIONS, EXTENSION_OPTIONS,
+    OP_OPTIONS, TRANSPORT_FEE_OPTIONS, DISCOUNT_OPTIONS,
+    DELIVERY_TYPE_OPTIONS, MEDIA_OPTIONS, CAST_OPTIONS,
+  }, renderRow);
+
+  // ── 予約追加ボタン ────────────────────────────────────────────────────────
+  document.getElementById('fab-add').addEventListener('click', e => {
+    e.stopPropagation();
+    openNewModal();
+  });
+}
