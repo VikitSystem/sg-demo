@@ -145,6 +145,25 @@ if (document.getElementById('booking-tbody')) {
     DELIVERY_TYPE_OPTIONS, MEDIA_OPTIONS, CAST_OPTIONS,
   } = await import('./mock/bookingselect.js');
 
+  // ── フィルターセレクトを動的生成 ──────────────────────────────────────────
+  {
+    const brandSel = document.getElementById('filter-brand');
+    BRANDS.forEach(br => {
+      const opt = document.createElement('option');
+      opt.value = br.label;
+      opt.textContent = br.label;
+      brandSel.appendChild(opt);
+    });
+
+    const staffSel = document.getElementById('filter-staff');
+    STAFF_OPTIONS.forEach(o => {
+      const opt = document.createElement('option');
+      opt.value = o.label;
+      opt.textContent = o.label;
+      staffSel.appendChild(opt);
+    });
+  }
+
   // ── テーブル描画ヘルパー ──────────────────────────────────────────────────
 
   function dim(val) {
