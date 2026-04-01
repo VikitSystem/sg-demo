@@ -66,46 +66,57 @@ export const NOMINATIONS = {
   'Fフリー': {
     brands: ['01', '02', '03'],
     membershipFee: 1000, nominationFee: 3000, specialNominationFee: 0,
+    first_flg: true, second_flg: false,
   },
   'Jフリー': {
     brands: ['01', '02', '03'],
     membershipFee: 0, nominationFee: 3000, specialNominationFee: 0,
+    first_flg: false, second_flg: true,
   },
   'F指名': {
     brands: ['01', '02', '03'],
     membershipFee: 1000, nominationFee: 5000, specialNominationFee: 0,
+    first_flg: true, second_flg: false,
   },
   'J指名': {
     brands: ['01', '02', '03'],
     membershipFee: 0, nominationFee: 5000, specialNominationFee: 0,
+    first_flg: false, second_flg: true,
   },
   'S本指名': {
     brands: ['01', '02', '03'],
     membershipFee: 0, nominationFee: 8000, specialNominationFee: 0,
+    first_flg: true, second_flg: true,
   },
   'JG×': {
     brands: ['01', '02', '03'],
     membershipFee: 0, nominationFee: 0, specialNominationFee: 0,
+    first_flg: false, second_flg: true,
   },
   'JT×': {
     brands: ['01', '02', '03'],
     membershipFee: 0, nominationFee: 0, specialNominationFee: 0,
+    first_flg: false, second_flg: true,
   },
   'JS×': {
     brands: ['01', '02', '03'],
     membershipFee: 0, nominationFee: 0, specialNominationFee: 0,
+    first_flg: false, second_flg: true,
   },
   'FG×': {
     brands: ['01', '02', '03'],
     membershipFee: 0, nominationFee: 0, specialNominationFee: 0,
+    first_flg: true, second_flg: false,
   },
   'FT×': {
     brands: ['01', '02', '03'],
     membershipFee: 0, nominationFee: 0, specialNominationFee: 0,
+    first_flg: true, second_flg: false,
   },
   'FS×': {
     brands: ['01', '02', '03'],
     membershipFee: 0, nominationFee: 0, specialNominationFee: 0,
+    first_flg: true, second_flg: false,
   },
 };
 

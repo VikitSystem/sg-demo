@@ -89,17 +89,26 @@
 <body>
 <script src="auth.js"></script>
 <script>requireAuth();</script>
+<script src="sidemenu.js"></script>
 
 <!-- トップバー -->
 <header class="topbar">
-  <span class="topbar__logo">SG</span>
+  <span class="topbar__logo" style="color:#ff8c42;-webkit-text-fill-color:#ff8c42;background:none;">SG</span>
+  <span style="margin-left:10px;font-size:12px;color:var(--muted);">本社管理アカウント</span><span style="font-size:12px;color:var(--muted);border-left:1px solid var(--line-2);padding-left:10px;margin-left:10px;">山田</span>
   <span class="topbar__title">予約管理</span>
   <nav class="topbar__nav">
     <a href="index.html">予約一覧</a>
     <a href="master.html" class="active">マスタ一覧</a>
   </nav>
   <span class="topbar__badge">仮画面</span>
+  <span style="margin-left:12px;font-size:11px;color:var(--muted);">権限</span>
+  <select style="margin-left:6px;width:auto;font-size:12px;padding:7px 32px 7px 10px;">
+    <option>本社閲覧権限</option>
+    <option>店舗管理権限</option>
+    <option>店舗作業権限</option>
+  </select>
   <button onclick="logout()" style="margin-left:12px;padding:4px 12px;background:transparent;border:1px solid var(--line);border-radius:4px;color:var(--muted);font-size:12px;cursor:pointer;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">ログアウト</button>
+  <button onclick="openSidemenu()" style="margin-left:6px;padding:4px 10px;background:transparent;border:1px solid var(--line);border-radius:4px;color:var(--muted);font-size:13px;cursor:pointer;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">→</button>
 </header>
 
 <main class="page page--wide">
@@ -286,10 +295,12 @@ moneyList('交通費', TRANSPORT_FEE_OPTIONS, 'value', row3);
       <td class="cell-money">${v.membershipFee ? '¥' + v.membershipFee.toLocaleString('ja-JP') : '<span style="color:var(--dim)">-</span>'}</td>
       <td class="cell-money">${v.nominationFee ? '¥' + v.nominationFee.toLocaleString('ja-JP') : '<span style="color:var(--dim)">-</span>'}</td>
       <td class="cell-money">${v.specialNominationFee ? '¥' + v.specialNominationFee.toLocaleString('ja-JP') : '<span style="color:var(--dim)">-</span>'}</td>
+      <td style="text-align:center">${v.first_flg ? '○' : '×'}</td>
+      <td style="text-align:center">${v.second_flg ? '○' : '×'}</td>
     </tr>`).join('');
   card('指名区分', `
     <table class="master-tbl">
-      <thead><tr><th>指名区分</th><th>適用ブランド</th><th>入会金</th><th>指名料</th><th>特別指名料</th></tr></thead>
+      <thead><tr><th>指名区分</th><th>適用ブランド</th><th>入会金</th><th>指名料</th><th>特別指名料</th><th>初回</th><th>二回目</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`, rowWide);
 }

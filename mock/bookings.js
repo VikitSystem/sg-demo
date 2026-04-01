@@ -21,6 +21,9 @@
  *   deliveryTypeId  → DELIVERY_TYPE_OPTIONS[].id
  *   carGoingId      → CAR_OPTIONS[].id
  *   carReturnId     → CAR_OPTIONS[].id
+ *
+ * visitType: '未選択' | '初回' | '二回目以降'
+ *   NOMINATIONS の first_flg / second_flg と整合させること
  */
 
 export const bookings = [
@@ -33,6 +36,7 @@ export const bookings = [
     tel1: "090", tel2: "1111", tel3: "2222",
     confirmedCall: false,
     customerName: "ヤマダ",
+    visitType: "二回目以降",
     nomination: "Jフリー",
     mediaId: "media_00",
     mediaDate: "2026-03-25",
@@ -67,6 +71,7 @@ export const bookings = [
     tel1: "090", tel2: "3333", tel3: "4444",
     confirmedCall: true,
     customerName: "スズキ",
+    visitType: "二回目以降",
     nomination: "J指名",
     mediaId: "media_02",
     mediaDate: "2026-03-25",
@@ -101,6 +106,7 @@ export const bookings = [
     tel1: "090", tel2: "5555", tel3: "6666",
     confirmedCall: false,
     customerName: "イトウ",
+    visitType: "初回",
     nomination: "Fフリー",
     mediaId: "media_03",
     mediaDate: "2026-03-25",
@@ -135,6 +141,7 @@ export const bookings = [
     tel1: "090", tel2: "7777", tel3: "8888",
     confirmedCall: false,
     customerName: "ワタナベ",
+    visitType: "未選択",
     nomination: "S本指名",
     mediaId: "media_00",
     mediaDate: "2026-03-24",
@@ -169,6 +176,7 @@ export const bookings = [
     tel1: "090", tel2: "9999", tel3: "0000",
     confirmedCall: false,
     customerName: "マツモト",
+    visitType: "二回目以降",
     nomination: "Jフリー",
     mediaId: "media_01",
     mediaDate: "2026-03-30",
@@ -203,6 +211,7 @@ export const bookings = [
     tel1: "080", tel2: "1234", tel3: "5678",
     confirmedCall: true,
     customerName: "カトウ",
+    visitType: "初回",
     nomination: "Fフリー",
     mediaId: "media_00",
     mediaDate: "2026-03-30",
@@ -237,6 +246,7 @@ export const bookings = [
     tel1: "090", tel2: "2345", tel3: "6789",
     confirmedCall: true,
     customerName: "ナカジマ",
+    visitType: "初回",
     nomination: "F指名",
     mediaId: "media_02",
     mediaDate: "2026-03-30",
@@ -271,6 +281,7 @@ export const bookings = [
     tel1: "090", tel2: "3456", tel3: "7890",
     confirmedCall: false,
     customerName: "コバヤシ",
+    visitType: "二回目以降",
     nomination: "Jフリー",
     mediaId: "media_01",
     mediaDate: "2026-03-30",
@@ -305,6 +316,7 @@ export const bookings = [
     tel1: "080", tel2: "4567", tel3: "8901",
     confirmedCall: true,
     customerName: "ヨシダ",
+    visitType: "未選択",
     nomination: "S本指名",
     mediaId: "media_00",
     mediaDate: "2026-03-30",
@@ -339,6 +351,7 @@ export const bookings = [
     tel1: "090", tel2: "5678", tel3: "9012",
     confirmedCall: false,
     customerName: "ハヤシ",
+    visitType: "初回",
     nomination: "Fフリー",
     mediaId: "media_03",
     mediaDate: "2026-03-30",
@@ -373,6 +386,7 @@ export const bookings = [
     tel1: "090", tel2: "6789", tel3: "0123",
     confirmedCall: true,
     customerName: "シミズ",
+    visitType: "二回目以降",
     nomination: "J指名",
     mediaId: "media_00",
     mediaDate: "2026-03-29",
@@ -407,6 +421,7 @@ export const bookings = [
     tel1: "080", tel2: "7890", tel3: "1234",
     confirmedCall: false,
     customerName: "オカダ",
+    visitType: "二回目以降",
     nomination: "Jフリー",
     mediaId: "media_01",
     mediaDate: "2026-03-30",
@@ -441,6 +456,7 @@ export const bookings = [
     tel1: "090", tel2: "8901", tel3: "2345",
     confirmedCall: true,
     customerName: "マエダ",
+    visitType: "未選択",
     nomination: "S本指名",
     mediaId: "media_00",
     mediaDate: "2026-03-30",
@@ -475,6 +491,7 @@ export const bookings = [
     tel1: "080", tel2: "9012", tel3: "3456",
     confirmedCall: false,
     customerName: "フジタ",
+    visitType: "初回",
     nomination: "Fフリー",
     mediaId: "media_03",
     mediaDate: "2026-03-30",

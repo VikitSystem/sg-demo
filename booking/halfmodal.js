@@ -10,7 +10,7 @@ export async function initHalfModal(bookings, {
   NOMINATIONS, COURSE_OPTIONS, EXTENSION_OPTIONS,
   OP_OPTIONS, TRANSPORT_FEE_OPTIONS, DISCOUNT_OPTIONS,
   DELIVERY_TYPE_OPTIONS, MEDIA_OPTIONS, CAST_OPTIONS,
-}, renderRow) {
+}, renderRow, renderSummary) {
 
   const EMPTY_BOOKING = {};
 
@@ -133,6 +133,8 @@ export async function initHalfModal(bookings, {
       b.options.push(btn.dataset.id);
     });
 
+    b.visitType   = document.getElementById('mf-visit-type').value;
+
     b.shopId      = document.getElementById('mf-shop-id').value;
     b.memberId    = document.getElementById('mf-member-id').value || null;
     b.companionId = document.getElementById('mf-companion-id').value;
@@ -153,6 +155,7 @@ export async function initHalfModal(bookings, {
     selectedTr.classList.add('is-selected');
 
     modalSubtitle.textContent = `${b.time}　${b.customerName}`;
+    renderSummary?.();
     closeModal();
   });
 
@@ -172,6 +175,7 @@ export async function initHalfModal(bookings, {
       if (countEl) countEl.textContent = parseInt(countEl.textContent || '0', 10) + 1;
     }
 
+    renderSummary?.();
     closeModal();
   });
 
@@ -204,6 +208,7 @@ export async function initHalfModal(bookings, {
     }
 
     updateCompleteBtn(done);
+    renderSummary?.();
   });
 
   // ── 行クリック → モーダルを開く ─────────────────────────────────────────
@@ -300,9 +305,21 @@ export async function initHalfModal(bookings, {
       <input type="text" class="mf__input mf__tel-box" id="mf-tel3" value="${b.tel3 || ''}" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="5678">
     </div>`;
 
-    // ── 指名区分 (ブランド連動) ──
+    // ── 来店区分 ──
+    const visitTypeOpts = ['未選択', '初回', '二回目以降'];
+    const curVisitType  = b.visitType || '未選択';
+    const visitCtrl = `<select class="mf__select" id="mf-visit-type">
+      ${visitTypeOpts.map(o => `<option${curVisitType === o ? ' selected' : ''}>${o}</option>`).join('')}
+    </select>`;
+
+    // ── 指名区分 (ブランド連動 + 来店区分連動) ──
     const nomOpts = Object.entries(NOMINATIONS)
-      .filter(([, v]) => v.brands.includes(brandShopId))
+      .filter(([, v]) => {
+        if (!v.brands.includes(brandShopId)) return false;
+        if (curVisitType === '初回') return v.first_flg;
+        if (curVisitType === '二回目以降') return v.second_flg;
+        return true;
+      })
       .map(([k]) => k);
     const nomCtrl = `<select class="mf__select" id="mf-nomination">
       ${nomOpts.map(o => `<option${b.nomination === o ? ' selected' : ''}>${o}</option>`).join('')}
@@ -362,7 +379,8 @@ export async function initHalfModal(bookings, {
       ${f('ブランド',       sel(brand, BRANDS.map(br => br.label), 'mf-brand'))}
       ${f('担当',          sel(b.staffId, STAFF_OPTIONS, 'mf-staff'))}
       ${f('TEL',          telCtrl, 2)}
-      ${f('お客様名',       txt(b.customerName, 'mf-customer-name'))}
+      ${f('お客様名',       txt(b.customerName, 'mf-customer-name'), 2)}
+      ${f('来店区分',       visitCtrl)}
       ${f('指名区分',       nomCtrl)}
       ${f('媒体',          mediaCtrl, 2)}
       ${f('女性',          sel(currentCastLabel, castLabels, 'mf-cast'))}
@@ -473,10 +491,16 @@ export async function initHalfModal(bookings, {
       document.getElementById('mf-shop-id').value = brandShopId;
 
       // 指名区分
+      const visitType = document.getElementById('mf-visit-type').value;
       const nomSel = document.getElementById('mf-nomination');
       const curNom = nomSel.value;
       nomSel.innerHTML = Object.entries(NOMINATIONS)
-        .filter(([, v]) => v.brands.includes(brandShopId))
+        .filter(([, v]) => {
+          if (!v.brands.includes(brandShopId)) return false;
+          if (visitType === '初回') return v.first_flg;
+          if (visitType === '二回目以降') return v.second_flg;
+          return true;
+        })
         .map(([k]) => `<option${k === curNom ? ' selected' : ''}>${k}</option>`).join('');
 
       // コース
@@ -522,6 +546,21 @@ export async function initHalfModal(bookings, {
     }
 
     document.getElementById('mf-brand').addEventListener('change', updateBrandSelects);
+    document.getElementById('mf-visit-type').addEventListener('change', () => {
+      const brand       = document.getElementById('mf-brand').value;
+      const brandShopId = BRANDS.find(br => br.label === brand)?.shopId || '';
+      const visitType   = document.getElementById('mf-visit-type').value;
+      const nomSel      = document.getElementById('mf-nomination');
+      const curNom      = nomSel.value;
+      nomSel.innerHTML  = Object.entries(NOMINATIONS)
+        .filter(([, v]) => {
+          if (!v.brands.includes(brandShopId)) return false;
+          if (visitType === '初回') return v.first_flg;
+          if (visitType === '二回目以降') return v.second_flg;
+          return true;
+        })
+        .map(([k]) => `<option${k === curNom ? ' selected' : ''}>${k}</option>`).join('');
+    });
     document.getElementById('mf-cast').addEventListener('change', () => {
       const cast = CAST_OPTIONS.find(c => c.label === document.getElementById('mf-cast').value);
       document.getElementById('mf-companion-id').value = cast?.companionId || '';

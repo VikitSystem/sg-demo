@@ -9,17 +9,26 @@
 <body>
 <script src="auth.js"></script>
 <script>requireAuth();</script>
+<script src="sidemenu.js"></script>
 
 <!-- トップバー -->
 <header class="topbar">
-  <span class="topbar__logo">SG</span>
+  <span class="topbar__logo" style="color:#ff8c42;-webkit-text-fill-color:#ff8c42;background:none;">SG</span>
+  <span style="margin-left:10px;font-size:12px;color:var(--muted);">本社管理アカウント</span><span style="font-size:12px;color:var(--muted);border-left:1px solid var(--line-2);padding-left:10px;margin-left:10px;">山田</span>
   <span class="topbar__title">予約管理</span>
   <nav class="topbar__nav">
     <a href="index.html" class="active">予約一覧</a>
     <a href="master.html">マスタ一覧</a>
   </nav>
   <span class="topbar__badge">仮画面</span>
+  <span style="margin-left:12px;font-size:11px;color:var(--muted);">権限</span>
+  <select style="margin-left:6px;width:auto;font-size:12px;padding:7px 32px 7px 10px;">
+    <option>本社閲覧権限</option>
+    <option>店舗管理権限</option>
+    <option>店舗作業権限</option>
+  </select>
   <button onclick="logout()" style="margin-left:12px;padding:4px 12px;background:transparent;border:1px solid var(--line);border-radius:4px;color:var(--muted);font-size:12px;cursor:pointer;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">ログアウト</button>
+  <button onclick="openSidemenu()" style="margin-left:6px;padding:4px 10px;background:transparent;border:1px solid var(--line);border-radius:4px;color:var(--muted);font-size:13px;cursor:pointer;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">→</button>
 </header>
 
 <main class="page page--wide">
@@ -73,9 +82,6 @@
     </div>
     <span class="badge-count"><strong id="booking-count">0</strong> 件</span>
   </div>
-
-  <!-- サマリーテーブル -->
-  <div id="summary-table"></div>
 
   <!-- テーブル -->
   <div class="table-wrap">

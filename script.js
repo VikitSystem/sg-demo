@@ -314,7 +314,10 @@ if (document.getElementById('booking-tbody')) {
 
   function renderSummary() {
     const extraCols = ['J','S','F','JG×','JT×','JS×','FG×','FS×','FT×'];
+    const nomCount = (list, col) => list.filter(b => b.nomination && b.nomination.includes(col)).length;
+    const nomCell  = (n) => n > 0 ? `<td>${n}</td>` : '<td class="cell-dim">0</td>';
     let totalAmount = 0, totalCount = 0;
+    const totalNom = new Array(extraCols.length).fill(0);
     const rows = BRANDS.map(br => {
       const brs = bookings.filter(b => b.shopId === br.shopId);
       const amount = brs.reduce((s, b) => {
@@ -323,18 +326,19 @@ if (document.getElementById('booking-tbody')) {
       }, 0);
       totalAmount += amount;
       totalCount  += brs.length;
+      const counts = extraCols.map((col, i) => { const n = nomCount(brs, col); totalNom[i] += n; return n; });
       return `<tr>
         <td>${br.label}</td>
         <td class="cell-money">¥${amount.toLocaleString('ja-JP')}</td>
         <td>${brs.length}</td>
-        ${extraCols.map(() => '<td class="cell-dim">0</td>').join('')}
+        ${counts.map(nomCell).join('')}
       </tr>`;
     });
     const totalRow = `<tr class="summary-total">
       <td><strong>合計</strong></td>
       <td class="cell-money"><strong>¥${totalAmount.toLocaleString('ja-JP')}</strong></td>
       <td><strong>${totalCount}</strong></td>
-      ${extraCols.map(() => '<td class="cell-dim">0</td>').join('')}
+      ${totalNom.map(nomCell).join('')}
     </tr>`;
     document.getElementById('summary-table').innerHTML = `
       <table class="booking-table" style="margin-bottom:16px">
@@ -375,7 +379,7 @@ if (document.getElementById('booking-tbody')) {
     NOMINATIONS, COURSE_OPTIONS, EXTENSION_OPTIONS,
     OP_OPTIONS, TRANSPORT_FEE_OPTIONS, DISCOUNT_OPTIONS,
     DELIVERY_TYPE_OPTIONS, MEDIA_OPTIONS, CAST_OPTIONS,
-  }, renderRow);
+  }, renderRow, renderSummary);
 
   // ── 予約追加ボタン ────────────────────────────────────────────────────────
   document.getElementById('fab-add').addEventListener('click', e => {
