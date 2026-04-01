@@ -10,7 +10,7 @@ export async function initHalfModal(bookings, {
   NOMINATIONS, COURSE_OPTIONS, EXTENSION_OPTIONS,
   OP_OPTIONS, TRANSPORT_FEE_OPTIONS, DISCOUNT_OPTIONS,
   DELIVERY_TYPE_OPTIONS, MEDIA_OPTIONS, CAST_OPTIONS,
-}, renderRow, renderSummary) {
+}, renderRow, renderSummary, { onOpen, onCustomerClick } = {}) {
 
   const EMPTY_BOOKING = {};
 
@@ -33,6 +33,10 @@ export async function initHalfModal(bookings, {
 
   const modalPanel = modal.querySelector('.modal-panel');
 
+  // 右パネル内のクリックを document までバブリングさせない
+  // （左モーダルの outsideClickHandler が誤発火するのを防ぐ）
+  modalPanel.addEventListener('click', e => e.stopPropagation());
+
   function outsideClickHandler(e) {
     if (!modalPanel.contains(e.target) && !isPopupOpen()) {
       closeModal();
@@ -53,6 +57,7 @@ export async function initHalfModal(bookings, {
   }
 
   function openModal(b, tr) {
+    onOpen?.();
     document.removeEventListener('click', outsideClickHandler);
     document.addEventListener('click', outsideClickHandler);
     if (selectedTr) selectedTr.classList.remove('is-selected');
@@ -61,7 +66,12 @@ export async function initHalfModal(bookings, {
     if (selectedTr) selectedTr.classList.add('is-selected');
     const isNew = !tr;
     modal.querySelector('.modal-label').textContent = isNew ? '予約追加' : '予約編集';
-    modalSubtitle.textContent = isNew ? '新規' : `${b.time}　${b.customerName}`;
+    if (isNew) {
+      modalSubtitle.textContent = '新規';
+    } else {
+      modalSubtitle.innerHTML = `${b.time}　<span class="modal-subtitle__name">${b.customerName || '-'}</span>`;
+      modalSubtitle.querySelector('.modal-subtitle__name').addEventListener('click', () => onCustomerClick?.(b));
+    }
     modalActionBtns.style.display = isNew ? 'none' : 'flex';
     btnAdd.style.display = isNew ? '' : 'none';
     if (!isNew) updateCompleteBtn(b.completed);
@@ -154,7 +164,8 @@ export async function initHalfModal(bookings, {
     selectedTr = newTr;
     selectedTr.classList.add('is-selected');
 
-    modalSubtitle.textContent = `${b.time}　${b.customerName}`;
+    modalSubtitle.innerHTML = `${b.time}　<span class="modal-subtitle__name">${b.customerName || '-'}</span>`;
+    modalSubtitle.querySelector('.modal-subtitle__name').addEventListener('click', () => onCustomerClick?.(b));
     renderSummary?.();
     closeModal();
   });

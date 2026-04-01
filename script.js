@@ -1,4 +1,5 @@
 import { initHalfModal } from './booking/halfmodal.js';
+import { initLeftModal } from './booking/left-halfmodal.js';
 
 // ─── テーブルヘッダー追従 ──────────────────────────────────────────────────────
 {
@@ -269,7 +270,7 @@ if (document.getElementById('booking-tbody')) {
         <td>${dim(staffLabel)}</td>
         <td class="cell-dim">${b.tel1 ? `${b.tel1}-${b.tel2}-${b.tel3}` : '<span class="cell-dim">-</span>'}</td>
         <td class="cell-chk">${chkBox(b.confirmedCall, done)}</td>
-        <td>${dim(b.customerName)}</td>
+        <td class="cell-customer-name">${dim(b.customerName)}</td>
         <td>${dim(b.nomination)}</td>
         <td>${mediaLabel ? `${mediaLabel}${b.mediaDate ? '<br><span class="cell-dim">' + b.mediaDate + '</span>' : ''}` : '<span class="cell-dim">-</span>'}</td>
         <td class="cell-chk">${walletCell(b.wallet)}</td>
@@ -372,6 +373,10 @@ if (document.getElementById('booking-tbody')) {
   document.getElementById('filter-staff').addEventListener('change', applyFilter);
   document.getElementById('filter-completed').addEventListener('change', applyFilter);
 
+  // ── 左ハーフモーダル初期化（お客様名クリック）────────────────────────────
+  // 右モーダルより先に addEventListener するため先に初期化する
+  const { openModal: openLeftModal, closeModal: closeLeftModal } = await initLeftModal(bookings, { MEDIA_OPTIONS });
+
   // ── ハーフモーダル初期化 ───────────────────────────────────────────────────
 
   const { openNewModal } = await initHalfModal(bookings, {
@@ -379,11 +384,12 @@ if (document.getElementById('booking-tbody')) {
     NOMINATIONS, COURSE_OPTIONS, EXTENSION_OPTIONS,
     OP_OPTIONS, TRANSPORT_FEE_OPTIONS, DISCOUNT_OPTIONS,
     DELIVERY_TYPE_OPTIONS, MEDIA_OPTIONS, CAST_OPTIONS,
-  }, renderRow, renderSummary);
+  }, renderRow, renderSummary, { onOpen: closeLeftModal, onCustomerClick: openLeftModal });
 
   // ── 予約追加ボタン ────────────────────────────────────────────────────────
   document.getElementById('fab-add').addEventListener('click', e => {
     e.stopPropagation();
     openNewModal();
+    openLeftModal({});
   });
 }
