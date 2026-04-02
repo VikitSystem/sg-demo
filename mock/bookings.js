@@ -35,7 +35,7 @@ export const bookings = [
     staffId: "staff_00",
     tel1: "090", tel2: "1111", tel3: "2222",
     confirmedCall: false,
-    customerName: "ヤマダ",
+    customerName: "ナカタ",
     visitType: "二回目以降",
     nomination: "Jフリー",
     mediaId: "media_00",
