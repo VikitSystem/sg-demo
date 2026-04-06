@@ -3,6 +3,14 @@
  * ログインキャスト: あおい (companionId: 101, shopId: 01, brand: ごほうび)
  */
 
+import {
+  STAFF_OPTIONS,
+  COURSE_OPTIONS,
+  EXTENSION_OPTIONS,
+  DELIVERY_TYPE_OPTIONS,
+  CAR_OPTIONS,
+} from '../../../mock/bookingselect.js';
+
 export const CAST_PROFILE = {
   companionId: '101',
   name: 'あおい',
@@ -12,19 +20,29 @@ export const CAST_PROFILE = {
   joinDate: '2025-06-01',
 };
 
-/** 本日(2026-04-06)の予約 */
-export const TODAY_BOOKINGS = [
+/**
+ * 本日(2026-04-06)の予約 — bookingselect.js のIDで管理
+ *
+ * courseId      → COURSE_OPTIONS[shopId][].id
+ * extensionId   → EXTENSION_OPTIONS[shopId][].id
+ * deliveryTypeId→ DELIVERY_TYPE_OPTIONS[].id
+ * staffId       → STAFF_OPTIONS[].id
+ * carGoingId    → CAR_OPTIONS[].id
+ * carReturnId   → CAR_OPTIONS[].id
+ */
+const RAW_BOOKINGS = [
   {
     id: 'b001',
     time: '19:00',
     outTime: '20:40',
     customerName: 'ナカタ',
-    courseLabel: '60分コース',
-    extensionLabel: '20分延長',
-    deliveryLabel: 'ホテル1',
-    staffLabel: '田中',
-    carGoingLabel: '富安ドライバー',
-    carReturnLabel: '富安ドライバー',
+    shopId: '01',
+    courseId: 'course_01_00',     // 60分
+    extensionId: 'ext_01_01',     // 30分
+    deliveryTypeId: 'delivery_01', // ホテル1
+    staffId: 'staff_00',           // 田中
+    carGoingId: 'car_01',          // 富安ドライバー
+    carReturnId: 'car_01',
     status: 'completed',
     note: '',
   },
@@ -32,13 +50,14 @@ export const TODAY_BOOKINGS = [
     id: 'b002',
     time: '21:30',
     outTime: '23:00',
-    customerName: 'ヤマダ',
-    courseLabel: '90分コース',
-    extensionLabel: 'なし',
-    deliveryLabel: 'ホテル2',
-    staffLabel: '佐藤',
-    carGoingLabel: '鉢呂ドライバー',
-    carReturnLabel: '鉢呂ドライバー',
+    customerName: 'ナカムラ',
+    shopId: '01',
+    courseId: 'course_01_01',     // 90分
+    extensionId: 'ext_01_00',     // なし
+    deliveryTypeId: 'delivery_02', // ホテル2
+    staffId: 'staff_01',           // 佐藤
+    carGoingId: 'car_02',          // 鉢呂ドライバー
+    carReturnId: 'car_02',
     status: 'active',
     note: '初回のお客様',
   },
@@ -47,16 +66,32 @@ export const TODAY_BOOKINGS = [
     time: '23:30',
     outTime: '01:00',
     customerName: 'サトウ',
-    courseLabel: '60分コース',
-    extensionLabel: 'なし',
-    deliveryLabel: 'ホテル1',
-    staffLabel: '田中',
-    carGoingLabel: 'なし',
-    carReturnLabel: 'なし',
+    shopId: '01',
+    courseId: 'course_01_00',     // 60分
+    extensionId: 'ext_01_00',     // なし
+    deliveryTypeId: 'delivery_01', // ホテル1
+    staffId: 'staff_00',           // 田中
+    carGoingId: 'car_00',          // なし
+    carReturnId: 'car_00',
     status: 'pending',
     note: '',
   },
 ];
+
+function labelById(arr, id) {
+  return arr.find(x => x.id === id)?.label ?? '—';
+}
+
+/** IDからラベルを解決した予約データ */
+export const TODAY_BOOKINGS = RAW_BOOKINGS.map(b => ({
+  ...b,
+  courseLabel:    labelById(COURSE_OPTIONS[b.shopId] ?? [], b.courseId),
+  extensionLabel: labelById(EXTENSION_OPTIONS[b.shopId] ?? [], b.extensionId),
+  deliveryLabel:  labelById(DELIVERY_TYPE_OPTIONS, b.deliveryTypeId),
+  staffLabel:     labelById(STAFF_OPTIONS, b.staffId),
+  carGoingLabel:  labelById(CAR_OPTIONS, b.carGoingId),
+  carReturnLabel: labelById(CAR_OPTIONS, b.carReturnId),
+}));
 
 /** 当月勤怠サマリー */
 export const MONTH_SUMMARY = {

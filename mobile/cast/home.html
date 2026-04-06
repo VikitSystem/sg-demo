@@ -36,7 +36,7 @@
     <div class="summary-grid">
       <div class="summary-card">
         <div class="summary-card__label">本日の予約</div>
-        <div class="summary-card__value" id="today-count">3<span class="summary-card__unit">件</span></div>
+        <div class="summary-card__value" id="today-count">0<span class="summary-card__unit">件</span></div>
       </div>
       <div class="summary-card">
         <div class="summary-card__label">出勤時間</div>
@@ -49,88 +49,13 @@
       <h2>次の予約</h2>
       <a href="schedule.html">すべて見る</a>
     </div>
-    <div class="card card--accent-blue" id="next-booking">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-        <span style="font-size:22px;font-weight:700;color:var(--text);">21:30</span>
-        <span class="badge badge--blue">進行中</span>
-      </div>
-      <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px;">ヤマダ 様</div>
-      <div style="font-size:13px;color:var(--muted);">90分コース &nbsp;|&nbsp; ホテル2</div>
-      <div style="font-size:12px;color:var(--amber);margin-top:6px;">📝 初回のお客様</div>
-      <div style="display:flex;gap:8px;margin-top:14px;">
-        <div style="flex:1;background:var(--deep);border-radius:8px;padding:8px 10px;">
-          <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">送迎（往）</div>
-          <div style="font-size:12px;color:var(--text);">鉢呂ドライバー</div>
-        </div>
-        <div style="flex:1;background:var(--deep);border-radius:8px;padding:8px 10px;">
-          <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">送迎（帰）</div>
-          <div style="font-size:12px;color:var(--text);">鉢呂ドライバー</div>
-        </div>
-        <div style="flex:1;background:var(--deep);border-radius:8px;padding:8px 10px;">
-          <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">担当スタッフ</div>
-          <div style="font-size:12px;color:var(--text);">佐藤</div>
-        </div>
-      </div>
-    </div>
+    <div id="next-booking"></div>
 
     <!-- 本日の予約一覧 -->
     <div class="section-header mt-4">
       <h2>本日の予約</h2>
     </div>
-    <div class="card" id="today-bookings">
-      <!-- booking item: completed -->
-      <div class="booking-item">
-        <div class="booking-item__time">
-          <div class="booking-item__time-start">19:00</div>
-          <div class="booking-item__time-end">〜20:40</div>
-        </div>
-        <div class="booking-item__dot">
-          <div class="booking-item__dot-circle is-done"></div>
-        </div>
-        <div class="booking-item__body">
-          <div class="booking-item__customer">
-            ナカタ 様
-            <span class="badge badge--dim" style="font-size:10px;padding:2px 6px;">完了</span>
-          </div>
-          <div class="booking-item__detail">60分コース ＋ 20分延長 &nbsp;|&nbsp; ホテル1</div>
-        </div>
-      </div>
-      <!-- booking item: active -->
-      <div class="booking-item">
-        <div class="booking-item__time">
-          <div class="booking-item__time-start">21:30</div>
-          <div class="booking-item__time-end">〜23:00</div>
-        </div>
-        <div class="booking-item__dot">
-          <div class="booking-item__dot-circle is-active"></div>
-        </div>
-        <div class="booking-item__body">
-          <div class="booking-item__customer">
-            ヤマダ 様
-            <span class="badge badge--green" style="font-size:10px;padding:2px 6px;">進行中</span>
-          </div>
-          <div class="booking-item__detail">90分コース &nbsp;|&nbsp; ホテル2</div>
-          <div class="booking-item__note">📝 初回のお客様</div>
-        </div>
-      </div>
-      <!-- booking item: pending -->
-      <div class="booking-item">
-        <div class="booking-item__time">
-          <div class="booking-item__time-start">23:30</div>
-          <div class="booking-item__time-end">〜01:00</div>
-        </div>
-        <div class="booking-item__dot">
-          <div class="booking-item__dot-circle"></div>
-        </div>
-        <div class="booking-item__body">
-          <div class="booking-item__customer">
-            サトウ 様
-            <span class="badge badge--amber" style="font-size:10px;padding:2px 6px;">予定</span>
-          </div>
-          <div class="booking-item__detail">60分コース &nbsp;|&nbsp; ホテル1</div>
-        </div>
-      </div>
-    </div>
+    <div class="card" id="today-bookings"></div>
 
   </main>
 
@@ -163,5 +88,209 @@
   </nav>
 </div>
 
+<!-- ─── モーダル ─── -->
+<div class="modal-overlay" id="modal-overlay"></div>
+<div class="modal-sheet" id="modal-sheet" role="dialog" aria-modal="true">
+  <div class="modal-sheet__handle"></div>
+  <div class="modal-sheet__header">
+    <div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px;" id="modal-time"></div>
+      <div class="modal-sheet__title" id="modal-name"></div>
+    </div>
+    <button class="modal-sheet__close" id="modal-close" aria-label="閉じる">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="modal-sheet__body">
+    <div id="modal-note" style="display:none;font-size:12px;color:var(--amber);margin-bottom:12px;"></div>
+    <div class="modal-detail-grid" id="modal-grid"></div>
+  </div>
+  <div class="modal-sheet__footer">
+    <button class="modal-action-btn modal-action-btn--start" id="btn-start">接客開始</button>
+    <button class="modal-action-btn modal-action-btn--end"   id="btn-end">接客終了</button>
+  </div>
+</div>
+
+<script type="module">
+  import { TODAY_BOOKINGS } from './mock/schedule.js';
+
+  // ── 共通ヘルパー ──────────────────────────────────────────
+  const STATUS_BADGE_INLINE = {
+    completed: '<span class="badge badge--dim"   style="font-size:10px;padding:2px 6px;">完了</span>',
+    active:    '<span class="badge badge--green" style="font-size:10px;padding:2px 6px;">進行中</span>',
+    pending:   '<span class="badge badge--amber" style="font-size:10px;padding:2px 6px;">予定</span>',
+  };
+  const DOT_CLASS = { completed: 'is-done', active: 'is-active', pending: '' };
+  const bookingMap = new Map(TODAY_BOOKINGS.map(b => [b.id, b]));
+
+  // ── 今日の件数 ────────────────────────────────────────────
+  document.getElementById('today-count').innerHTML =
+    `${TODAY_BOOKINGS.length}<span class="summary-card__unit">件</span>`;
+
+  // ── 次の予約カード ─────────────────────────────────────────
+  const featured = TODAY_BOOKINGS.find(b => b.status === 'active')
+               ?? TODAY_BOOKINGS.find(b => b.status === 'pending');
+
+  if (featured) {
+    const statusBadge = featured.status === 'active'
+      ? '<span class="badge badge--green">進行中</span>'
+      : '<span class="badge badge--amber">予定</span>';
+    const noteHtml = featured.note
+      ? `<div style="font-size:12px;color:var(--amber);margin-top:6px;">📝 ${featured.note}</div>`
+      : '';
+    const extPart = featured.extensionLabel && featured.extensionLabel !== 'なし'
+      ? ` ＋ ${featured.extensionLabel}` : '';
+
+    document.getElementById('next-booking').innerHTML = `
+      <div class="card card--accent-blue" data-booking-id="${featured.id}" style="cursor:pointer;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-size:22px;font-weight:700;color:var(--text);">${featured.time}</span>
+          ${statusBadge}
+        </div>
+        <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px;">${featured.customerName} 様</div>
+        <div style="font-size:13px;color:var(--muted);">${featured.courseLabel}${extPart} &nbsp;|&nbsp; ${featured.deliveryLabel}</div>
+        ${noteHtml}
+        <div style="display:flex;gap:8px;margin-top:14px;">
+          <div style="flex:1;background:var(--deep);border-radius:8px;padding:8px 10px;">
+            <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">送迎（往）</div>
+            <div style="font-size:12px;color:var(--text);">${featured.carGoingLabel}</div>
+          </div>
+          <div style="flex:1;background:var(--deep);border-radius:8px;padding:8px 10px;">
+            <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">送迎（帰）</div>
+            <div style="font-size:12px;color:var(--text);">${featured.carReturnLabel}</div>
+          </div>
+          <div style="flex:1;background:var(--deep);border-radius:8px;padding:8px 10px;">
+            <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">担当スタッフ</div>
+            <div style="font-size:12px;color:var(--text);">${featured.staffLabel}</div>
+          </div>
+        </div>
+      </div>`;
+  } else {
+    document.getElementById('next-booking').innerHTML =
+      '<div class="card" style="color:var(--muted);font-size:13px;text-align:center;padding:20px;">本日の予約はありません</div>';
+  }
+
+  // ── 本日の予約リスト ───────────────────────────────────────
+  function renderItem(b) {
+    const extPart = b.extensionLabel && b.extensionLabel !== 'なし'
+      ? ` ＋ ${b.extensionLabel}` : '';
+    const noteHtml = b.note
+      ? `<div class="booking-item__note">📝 ${b.note}</div>` : '';
+    return `
+      <div class="booking-item" data-booking-id="${b.id}" style="cursor:pointer;">
+        <div class="booking-item__time">
+          <div class="booking-item__time-start">${b.time}</div>
+          <div class="booking-item__time-end">〜${b.outTime}</div>
+        </div>
+        <div class="booking-item__dot">
+          <div class="booking-item__dot-circle ${DOT_CLASS[b.status] ?? ''}"></div>
+        </div>
+        <div class="booking-item__body">
+          <div class="booking-item__customer">
+            ${b.customerName} 様
+            ${STATUS_BADGE_INLINE[b.status] ?? ''}
+          </div>
+          <div class="booking-item__detail">${b.courseLabel}${extPart} &nbsp;|&nbsp; ${b.deliveryLabel}</div>
+          ${noteHtml}
+        </div>
+      </div>`;
+  }
+
+  document.getElementById('today-bookings').innerHTML =
+    TODAY_BOOKINGS.length
+      ? TODAY_BOOKINGS.map(renderItem).join('')
+      : '<div style="color:var(--muted);font-size:13px;text-align:center;padding:20px;">本日の予約はありません</div>';
+
+  // ── モーダル制御 ───────────────────────────────────────────
+  const overlay  = document.getElementById('modal-overlay');
+  const sheet    = document.getElementById('modal-sheet');
+  const btnStart = document.getElementById('btn-start');
+  const btnEnd   = document.getElementById('btn-end');
+
+  function openModal(booking) {
+    // ヘッダー
+    document.getElementById('modal-time').textContent =
+      `${booking.time} 〜 ${booking.outTime}`;
+    document.getElementById('modal-name').textContent =
+      `${booking.customerName} 様`;
+
+    // ノート
+    const noteEl = document.getElementById('modal-note');
+    if (booking.note) {
+      noteEl.textContent = `📝 ${booking.note}`;
+      noteEl.style.display = '';
+    } else {
+      noteEl.style.display = 'none';
+    }
+
+    // 詳細グリッド
+    const cells = [
+      ['コース',     booking.courseLabel],
+      ['延長',       booking.extensionLabel],
+      ['デリバリー', booking.deliveryLabel],
+      ['担当スタッフ', booking.staffLabel],
+      ['送迎（往）', booking.carGoingLabel],
+      ['送迎（帰）', booking.carReturnLabel],
+    ];
+    document.getElementById('modal-grid').innerHTML = cells.map(([label, value]) =>
+      `<div class="modal-detail-cell">
+        <div class="modal-detail-cell__label">${label}</div>
+        <div class="modal-detail-cell__value">${value}</div>
+      </div>`
+    ).join('');
+
+    // ボタン状態
+    // pending  → 接客開始 のみ有効
+    // active   → 接客終了 のみ有効
+    // completed→ 両方無効
+    btnStart.disabled = booking.status !== 'pending';
+    btnEnd.disabled   = booking.status !== 'active';
+
+    overlay.classList.add('is-open');
+    sheet.classList.add('is-open');
+  }
+
+  function closeModal() {
+    overlay.classList.remove('is-open');
+    sheet.classList.remove('is-open');
+  }
+
+  // オーバーレイ・閉じるボタン
+  overlay.addEventListener('click', closeModal);
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+
+  // 仮実装トースト
+  function toast(msg) {
+    const el = document.createElement('div');
+    el.textContent = msg;
+    Object.assign(el.style, {
+      position: 'fixed', bottom: '100px', left: '50%', transform: 'translateX(-50%)',
+      background: 'var(--panel)', border: '1px solid var(--line-2)', color: 'var(--text)',
+      padding: '10px 20px', borderRadius: '8px', fontSize: '13px', zIndex: '400',
+      boxShadow: 'var(--shadow)', whiteSpace: 'nowrap', opacity: '1', transition: 'opacity 0.3s',
+    });
+    document.body.appendChild(el);
+    setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2000);
+  }
+
+  btnStart.addEventListener('click', () => {
+    toast('接客開始を記録しました（仮）');
+    closeModal();
+  });
+  btnEnd.addEventListener('click', () => {
+    toast('接客終了を記録しました（仮）');
+    closeModal();
+  });
+
+  // 予約クリック（イベント委譲）
+  document.addEventListener('click', e => {
+    const target = e.target.closest('[data-booking-id]');
+    if (!target) return;
+    const booking = bookingMap.get(target.dataset.bookingId);
+    if (booking) openModal(booking);
+  });
+</script>
 </body>
 </html>

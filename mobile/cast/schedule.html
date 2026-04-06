@@ -35,107 +35,14 @@
 
     <!-- 件数サマリー -->
     <div style="display:flex;gap:8px;margin-bottom:14px;">
-      <span class="badge badge--dim">全 3件</span>
-      <span class="badge badge--green">完了 1件</span>
-      <span class="badge badge--blue">進行中 1件</span>
-      <span class="badge badge--amber">予定 1件</span>
+      <span class="badge badge--dim"   id="badge-total">全 0件</span>
+      <span class="badge badge--green" id="badge-completed">完了 0件</span>
+      <span class="badge badge--blue"  id="badge-active">進行中 0件</span>
+      <span class="badge badge--amber" id="badge-pending">予定 0件</span>
     </div>
 
     <!-- 予約カード一覧 -->
-    <div id="booking-list">
-
-      <!-- 完了 -->
-      <div class="card" style="margin-bottom:10px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-          <div style="display:flex;align-items:baseline;gap:6px;">
-            <span style="font-size:20px;font-weight:700;color:var(--text);">19:00</span>
-            <span style="font-size:13px;color:var(--muted);">〜 20:40</span>
-          </div>
-          <span class="badge badge--dim">完了</span>
-        </div>
-        <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;">ナカタ 様</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-          <div style="background:var(--deep);border-radius:6px;padding:8px 10px;">
-            <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">コース</div>
-            <div style="font-size:12px;color:var(--text);">60分コース</div>
-          </div>
-          <div style="background:var(--deep);border-radius:6px;padding:8px 10px;">
-            <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">延長</div>
-            <div style="font-size:12px;color:var(--text);">20分延長</div>
-          </div>
-          <div style="background:var(--deep);border-radius:6px;padding:8px 10px;">
-            <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">デリバリー</div>
-            <div style="font-size:12px;color:var(--text);">ホテル1</div>
-          </div>
-          <div style="background:var(--deep);border-radius:6px;padding:8px 10px;">
-            <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">担当</div>
-            <div style="font-size:12px;color:var(--text);">田中</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 進行中 -->
-      <div class="card card--accent-blue" style="margin-bottom:10px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-          <div style="display:flex;align-items:baseline;gap:6px;">
-            <span style="font-size:20px;font-weight:700;color:var(--text);">21:30</span>
-            <span style="font-size:13px;color:var(--muted);">〜 23:00</span>
-          </div>
-          <span class="badge badge--green">進行中</span>
-        </div>
-        <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px;">ヤマダ 様</div>
-        <div style="font-size:12px;color:var(--amber);margin-bottom:8px;">📝 初回のお客様</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-          <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:8px 10px;">
-            <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">コース</div>
-            <div style="font-size:12px;color:var(--text);">90分コース</div>
-          </div>
-          <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:8px 10px;">
-            <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">延長</div>
-            <div style="font-size:12px;color:var(--text);">なし</div>
-          </div>
-          <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:8px 10px;">
-            <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">デリバリー</div>
-            <div style="font-size:12px;color:var(--text);">ホテル2</div>
-          </div>
-          <div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:8px 10px;">
-            <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">担当</div>
-            <div style="font-size:12px;color:var(--text);">佐藤</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 予定 -->
-      <div class="card" style="margin-bottom:10px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-          <div style="display:flex;align-items:baseline;gap:6px;">
-            <span style="font-size:20px;font-weight:700;color:var(--text);">23:30</span>
-            <span style="font-size:13px;color:var(--muted);">〜 01:00</span>
-          </div>
-          <span class="badge badge--amber">予定</span>
-        </div>
-        <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;">サトウ 様</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-          <div style="background:var(--deep);border-radius:6px;padding:8px 10px;">
-            <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">コース</div>
-            <div style="font-size:12px;color:var(--text);">60分コース</div>
-          </div>
-          <div style="background:var(--deep);border-radius:6px;padding:8px 10px;">
-            <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">延長</div>
-            <div style="font-size:12px;color:var(--text);">なし</div>
-          </div>
-          <div style="background:var(--deep);border-radius:6px;padding:8px 10px;">
-            <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">デリバリー</div>
-            <div style="font-size:12px;color:var(--text);">ホテル1</div>
-          </div>
-          <div style="background:var(--deep);border-radius:6px;padding:8px 10px;">
-            <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">担当</div>
-            <div style="font-size:12px;color:var(--text);">田中</div>
-          </div>
-        </div>
-      </div>
-
-    </div>
+    <div id="booking-list"></div>
 
   </main>
 
@@ -168,6 +75,7 @@
   </nav>
 </div>
 
+<!-- 日付ナビ（通常スクリプト） -->
 <script>
   const DAYS = ['日', '月', '火', '水', '木', '金', '土'];
   let current = new Date('2026-04-06');
@@ -188,6 +96,65 @@
     current.setDate(current.getDate() + 1);
     updateLabel();
   });
+</script>
+
+<!-- 予約カード描画（モジュール） -->
+<script type="module">
+  import { TODAY_BOOKINGS } from './mock/schedule.js';
+
+  const STATUS_BADGE = {
+    completed: '<span class="badge badge--dim">完了</span>',
+    active:    '<span class="badge badge--green">進行中</span>',
+    pending:   '<span class="badge badge--amber">予定</span>',
+  };
+
+  function renderCard(b) {
+    const isActive = b.status === 'active';
+    const cardClass = isActive ? 'card card--accent-blue' : 'card';
+    const cellBg = isActive ? 'rgba(0,0,0,0.2)' : 'var(--deep)';
+
+    const cell = (label, value) =>
+      `<div style="background:${cellBg};border-radius:6px;padding:8px 10px;">
+        <div style="font-size:10px;color:var(--dim);margin-bottom:2px;">${label}</div>
+        <div style="font-size:12px;color:var(--text);">${value}</div>
+      </div>`;
+
+    const noteHtml = b.note
+      ? `<div style="font-size:12px;color:var(--amber);margin-bottom:8px;">📝 ${b.note}</div>`
+      : '';
+
+    const nameMb = b.note ? '4' : '8';
+
+    return `
+      <div class="${cardClass}" style="margin-bottom:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div style="display:flex;align-items:baseline;gap:6px;">
+            <span style="font-size:20px;font-weight:700;color:var(--text);">${b.time}</span>
+            <span style="font-size:13px;color:var(--muted);">〜 ${b.outTime}</span>
+          </div>
+          ${STATUS_BADGE[b.status] ?? ''}
+        </div>
+        <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:${nameMb}px;">${b.customerName} 様</div>
+        ${noteHtml}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          ${cell('コース',     b.courseLabel)}
+          ${cell('延長',       b.extensionLabel)}
+          ${cell('デリバリー', b.deliveryLabel)}
+          ${cell('担当',       b.staffLabel)}
+        </div>
+      </div>`;
+  }
+
+  document.getElementById('booking-list').innerHTML =
+    TODAY_BOOKINGS.map(renderCard).join('');
+
+  // サマリーバッジ更新
+  const counts = { completed: 0, active: 0, pending: 0 };
+  TODAY_BOOKINGS.forEach(b => { if (b.status in counts) counts[b.status]++; });
+  document.getElementById('badge-total').textContent     = `全 ${TODAY_BOOKINGS.length}件`;
+  document.getElementById('badge-completed').textContent = `完了 ${counts.completed}件`;
+  document.getElementById('badge-active').textContent    = `進行中 ${counts.active}件`;
+  document.getElementById('badge-pending').textContent   = `予定 ${counts.pending}件`;
 </script>
 </body>
 </html>
