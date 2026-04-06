@@ -161,32 +161,6 @@
   </nav>
 </div>
 
-<script>
-  function updateClock() {
-    const now = new Date();
-    const hh = String(now.getHours()).padStart(2, '0');
-    const mm = String(now.getMinutes()).padStart(2, '0');
-    document.getElementById('clock').textContent = `${hh}:${mm}`;
-  }
-  updateClock();
-  setInterval(updateClock, 10000);
-
-  // 打刻ボタン（仮実装 — クリックでトースト表示のみ）
-  const toast = (msg) => {
-    const el = document.createElement('div');
-    el.textContent = msg;
-    Object.assign(el.style, {
-      position: 'fixed', bottom: '80px', left: '50%', transform: 'translateX(-50%)',
-      background: 'var(--panel)', border: '1px solid var(--line-2)', color: 'var(--text)',
-      padding: '10px 20px', borderRadius: '8px', fontSize: '13px', zIndex: '200',
-      boxShadow: 'var(--shadow)', whiteSpace: 'nowrap', opacity: '1', transition: 'opacity 0.3s',
-    });
-    document.body.appendChild(el);
-    setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2000);
-  };
-
-  document.getElementById('btn-break').addEventListener('click', () => toast('休憩打刻を記録しました（仮）'));
-  document.getElementById('btn-out').addEventListener('click',   () => toast('退勤打刻を記録しました（仮）'));
-</script>
+<script type="module" src="./script.js"></script>
 </body>
 </html>

@@ -24,33 +24,6 @@
 </div>
 
 <script src="auth.js"></script>
-<script>
-  if (isAuthed()) {
-    const params = new URLSearchParams(location.search);
-    const dest = params.get('redirect') || 'home.html';
-    location.replace(dest);
-  }
-
-  document.getElementById('login-btn').addEventListener('click', doLogin);
-  document.getElementById('code').addEventListener('keydown', e => {
-    if (e.key === 'Enter') document.getElementById('password').focus();
-  });
-  document.getElementById('password').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
-  });
-
-  function doLogin() {
-    const code     = document.getElementById('code').value.trim();
-    const password = document.getElementById('password').value.trim();
-    if (login(code, password)) {
-      const params = new URLSearchParams(location.search);
-      const dest = params.get('redirect') || 'home.html';
-      location.replace(dest);
-    } else {
-      document.getElementById('login-error').textContent = 'アクセスコードが正しくありません';
-      document.getElementById('code').focus();
-    }
-  }
-</script>
+<script type="module" src="./script.js"></script>
 </body>
 </html>
