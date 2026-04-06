@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>勤怠 — SG キャスト</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<script src="auth.js"></script>
+<script>requireAuth();</script>
+
+<div class="app-shell">
+  <!-- Header -->
+  <header class="app-header">
+    <span class="app-header__logo">SG</span>
+    <span class="app-header__title">勤怠</span>
+    <span class="app-header__badge">仮画面</span>
+    <button class="app-header__action" onclick="logout()">ログアウト</button>
+  </header>
+
+  <!-- Body -->
+  <main class="app-body">
+
+    <!-- 現在時刻 -->
+    <div class="card text-center" style="padding:20px 16px 16px;">
+      <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em;margin-bottom:6px;">現在時刻</div>
+      <div style="font-size:48px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;line-height:1;" id="clock">--:--</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:6px;" id="today-date">2026年4月6日（月）</div>
+      <div style="margin-top:12px;">
+        <span class="badge badge--green" id="work-status">● 出勤中</span>
+      </div>
+    </div>
+
+    <!-- 打刻ボタン -->
+    <div style="margin-bottom:16px;">
+      <div class="clock-btn-group">
+        <button class="clock-btn clock-btn--in"  id="btn-in"    disabled>出勤</button>
+        <button class="clock-btn clock-btn--break" id="btn-break">休憩</button>
+        <button class="clock-btn clock-btn--out"  id="btn-out">退勤</button>
+      </div>
+      <div style="font-size:11px;color:var(--dim);text-align:center;">※ 打刻は仮実装です。実際には送信されません。</div>
+    </div>
+
+    <!-- 本日の打刻記録 -->
+    <div class="section-header">
+      <h2>本日の打刻記録</h2>
+    </div>
+    <div class="card mb-16" id="today-log">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0b0d12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div style="flex:1;font-size:14px;color:var(--text);">出勤</div>
+        <div style="font-size:15px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;">18:30</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);opacity:0.45;">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--line-2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/></svg>
+        </div>
+        <div style="flex:1;font-size:14px;color:var(--muted);">休憩開始</div>
+        <div style="font-size:13px;color:var(--dim);">— : —</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;opacity:0.45;">
+        <div style="width:20px;height:20px;border-radius:50%;background:var(--line-2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+        <div style="flex:1;font-size:14px;color:var(--muted);">退勤</div>
+        <div style="font-size:13px;color:var(--dim);">— : —</div>
+      </div>
+    </div>
+
+    <!-- 当月サマリー -->
+    <div class="section-header">
+      <h2>4月の実績</h2>
+    </div>
+    <div class="summary-grid mb-16">
+      <div class="summary-card">
+        <div class="summary-card__label">出勤日数</div>
+        <div class="summary-card__value">8<span class="summary-card__unit">日</span></div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card__label">総勤務時間</div>
+        <div class="summary-card__value" style="font-size:18px;">44<span class="summary-card__unit">h</span></div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card__label">予定出勤日</div>
+        <div class="summary-card__value">16<span class="summary-card__unit">日</span></div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card__label">残り出勤日</div>
+        <div class="summary-card__value">8<span class="summary-card__unit">日</span></div>
+      </div>
+    </div>
+
+    <!-- 直近の勤怠ログ -->
+    <div class="section-header">
+      <h2>直近の打刻履歴</h2>
+    </div>
+    <div class="card">
+      <div class="att-log-item">
+        <div class="att-log-item__date">4/6（月）</div>
+        <div class="att-log-item__times">18:30 〜 <span style="color:var(--dim)">—</span></div>
+        <span class="badge badge--green" style="font-size:10px;padding:2px 7px;">出勤中</span>
+      </div>
+      <div class="att-log-item">
+        <div class="att-log-item__date">4/5（日）</div>
+        <div class="att-log-item__times">19:00 〜 02:30</div>
+        <div class="att-log-item__hours">6.5h</div>
+      </div>
+      <div class="att-log-item">
+        <div class="att-log-item__date">4/4（土）</div>
+        <div class="att-log-item__times">18:45 〜 01:00</div>
+        <div class="att-log-item__hours">6.25h</div>
+      </div>
+      <div class="att-log-item">
+        <div class="att-log-item__date">4/3（金）</div>
+        <div class="att-log-item__times" style="color:var(--dim);">休日</div>
+        <div class="att-log-item__hours" style="color:var(--dim);">—</div>
+      </div>
+      <div class="att-log-item">
+        <div class="att-log-item__date">4/2（木）</div>
+        <div class="att-log-item__times">19:00 〜 00:30</div>
+        <div class="att-log-item__hours">5h</div>
+      </div>
+      <div class="att-log-item">
+        <div class="att-log-item__date">4/1（水）</div>
+        <div class="att-log-item__times">19:30 〜 23:00</div>
+        <div class="att-log-item__hours">3.5h</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <a class="bottom-nav__item" href="home.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      ホーム
+    </a>
+    <a class="bottom-nav__item" href="schedule.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+      予約
+    </a>
+    <a class="bottom-nav__item active" href="attendance.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+      </svg>
+      勤怠
+    </a>
+    <a class="bottom-nav__item" href="profile.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+      マイページ
+    </a>
+  </nav>
+</div>
+
+<script>
+  function updateClock() {
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('clock').textContent = `${hh}:${mm}`;
+  }
+  updateClock();
+  setInterval(updateClock, 10000);
+
+  // 打刻ボタン（仮実装 — クリックでトースト表示のみ）
+  const toast = (msg) => {
+    const el = document.createElement('div');
+    el.textContent = msg;
+    Object.assign(el.style, {
+      position: 'fixed', bottom: '80px', left: '50%', transform: 'translateX(-50%)',
+      background: 'var(--panel)', border: '1px solid var(--line-2)', color: 'var(--text)',
+      padding: '10px 20px', borderRadius: '8px', fontSize: '13px', zIndex: '200',
+      boxShadow: 'var(--shadow)', whiteSpace: 'nowrap', opacity: '1', transition: 'opacity 0.3s',
+    });
+    document.body.appendChild(el);
+    setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2000);
+  };
+
+  document.getElementById('btn-break').addEventListener('click', () => toast('休憩打刻を記録しました（仮）'));
+  document.getElementById('btn-out').addEventListener('click',   () => toast('退勤打刻を記録しました（仮）'));
+</script>
+</body>
+</html>

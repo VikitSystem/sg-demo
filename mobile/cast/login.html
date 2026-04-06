@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>ログイン — SG キャスト</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">SG</div>
+    <div class="login-subtitle">キャスト専用ポータル</div>
+
+    <label class="login-label" for="code">アクセスコード</label>
+    <input class="login-input" type="password" id="code" placeholder="アクセスコードを入力" autocomplete="off" />
+    <label class="login-label" for="password" style="margin-top:14px;">パスワード</label>
+    <input class="login-input" type="password" id="password" placeholder="パスワードを入力" autocomplete="off" />
+    <button class="login-btn" id="login-btn">ログイン</button>
+    <div class="login-error" id="login-error"></div>
+
+    <div class="login-note">このページはキャスト専用のポータルです。<br>アクセスコードをお持ちの方のみご利用いただけます。</div>
+  </div>
+</div>
+
+<script src="auth.js"></script>
+<script>
+  if (isAuthed()) {
+    const params = new URLSearchParams(location.search);
+    const dest = params.get('redirect') || 'home.html';
+    location.replace(dest);
+  }
+
+  document.getElementById('login-btn').addEventListener('click', doLogin);
+  document.getElementById('code').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('password').focus();
+  });
+  document.getElementById('password').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  function doLogin() {
+    const code     = document.getElementById('code').value.trim();
+    const password = document.getElementById('password').value.trim();
+    if (login(code, password)) {
+      const params = new URLSearchParams(location.search);
+      const dest = params.get('redirect') || 'home.html';
+      location.replace(dest);
+    } else {
+      document.getElementById('login-error').textContent = 'アクセスコードが正しくありません';
+      document.getElementById('code').focus();
+    }
+  }
+</script>
+</body>
+</html>
