@@ -29,10 +29,11 @@ const MODAL_HTML = `
   <div class="modal-sheet__footer">
     <button class="modal-action-btn modal-action-btn--start" id="modal-btn-start">接客開始</button>
     <button class="modal-action-btn modal-action-btn--end"   id="modal-btn-end">接客終了</button>
+    <button class="modal-action-btn modal-action-btn--cancel" id="modal-btn-cancel" style="display:none;">完了取消</button>
   </div>
 </div>`;
 
-let _overlay, _sheet, _btnStart, _btnEnd;
+let _overlay, _sheet, _btnStart, _btnEnd, _btnCancel;
 let _initialized = false;
 
 export function closeBookingModal() {
@@ -42,18 +43,19 @@ export function closeBookingModal() {
 
 /**
  * モーダルを初期化する（1回だけ呼ぶ）
- * @param {{ onStart?: (booking) => void, onEnd?: (booking) => void }} callbacks
+ * @param {{ onStart?: (booking) => void, onEnd?: (booking) => void, onCancel?: (booking) => void }} callbacks
  */
-export function initBookingModal({ onStart, onEnd } = {}) {
+export function initBookingModal({ onStart, onEnd, onCancel } = {}) {
   if (_initialized) return;
   _initialized = true;
 
   document.body.insertAdjacentHTML('beforeend', MODAL_HTML);
 
-  _overlay  = document.getElementById('modal-overlay');
-  _sheet    = document.getElementById('modal-sheet');
-  _btnStart = document.getElementById('modal-btn-start');
-  _btnEnd   = document.getElementById('modal-btn-end');
+  _overlay   = document.getElementById('modal-overlay');
+  _sheet     = document.getElementById('modal-sheet');
+  _btnStart  = document.getElementById('modal-btn-start');
+  _btnEnd    = document.getElementById('modal-btn-end');
+  _btnCancel = document.getElementById('modal-btn-cancel');
 
   _overlay.addEventListener('click', closeBookingModal);
   document.getElementById('modal-close').addEventListener('click', closeBookingModal);
@@ -68,6 +70,10 @@ export function initBookingModal({ onStart, onEnd } = {}) {
     onEnd?.(_current);
     closeBookingModal();
   });
+  _btnCancel.addEventListener('click', () => {
+    onCancel?.(_current);
+    closeBookingModal();
+  });
 
   // openBookingModal が _current を参照できるよう再代入できる仕組みにする
   _initCurrent = v => { _current = v; };
@@ -79,8 +85,9 @@ let _initCurrent = null;
 /**
  * 予約詳細モーダルを開く
  * @param {object} booking - TODAY_BOOKINGS の1エントリ
+ * @param {{ disableStart?: boolean }} options
  */
-export function openBookingModal(booking) {
+export function openBookingModal(booking, { disableStart = false } = {}) {
   _initCurrent?.(booking);
 
   // ヘッダー
@@ -115,10 +122,14 @@ export function openBookingModal(booking) {
   ).join('');
 
   // ボタン状態
-  // pending  → 接客開始 のみ有効
-  // active   → 接客終了 のみ有効
-  // completed→ 両方無効
-  _btnStart.disabled = booking.status !== 'pending';
+  // pending   → 接客開始 のみ表示
+  // active    → 接客終了 のみ表示
+  // completed → 完了取消 のみ表示（全幅）
+  const isCompleted = booking.status === 'completed';
+  _btnStart.style.display  = isCompleted ? 'none' : '';
+  _btnEnd.style.display    = isCompleted ? 'none' : '';
+  _btnCancel.style.display = isCompleted ? '' : 'none';
+  _btnStart.disabled = booking.status !== 'pending' || disableStart;
   _btnEnd.disabled   = booking.status !== 'active';
 
   _overlay.classList.add('is-open');

@@ -723,3 +723,7 @@ html, body {
   background: var(--green);
   color: #0b0d12;
 }
+.modal-action-btn--cancel {
+  background: var(--dim);
+  color: var(--text);
+}
