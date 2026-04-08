@@ -6,15 +6,22 @@
  *   initBookingModal({ onStart, onEnd });
  *   // クリック時に openBookingModal(booking) を呼ぶ
  */
+import { TALK_LIST } from '../mock/chat.js';
 
 const MODAL_HTML = `
 <div class="modal-overlay" id="modal-overlay"></div>
 <div class="modal-sheet" id="modal-sheet" role="dialog" aria-modal="true">
   <div class="modal-sheet__handle"></div>
   <div class="modal-sheet__header">
-    <div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:4px;" id="modal-time"></div>
-      <div class="modal-sheet__title" id="modal-name"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex:1;gap:12px;">
+      <div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px;" id="modal-time"></div>
+        <div class="modal-sheet__title" id="modal-name"></div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <a id="modal-btn-store-chat" href="#" style="display:none;font-size:12px;color:var(--green);background:transparent;border:1px solid rgba(95,226,162,0.4);border-radius:4px;padding:4px 12px;text-decoration:none;white-space:nowrap;font-family:var(--font);">予約チャット</a>
+        <a id="modal-btn-chat" href="#" style="display:none;font-size:12px;color:var(--blue);background:transparent;border:1px solid rgba(122,162,255,0.4);border-radius:4px;padding:4px 12px;text-decoration:none;white-space:nowrap;font-family:var(--font);">顧客チャット</a>
+      </div>
     </div>
     <button class="modal-sheet__close" id="modal-close" aria-label="閉じる">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -33,7 +40,7 @@ const MODAL_HTML = `
   </div>
 </div>`;
 
-let _overlay, _sheet, _btnStart, _btnEnd, _btnCancel;
+let _overlay, _sheet, _btnStart, _btnEnd, _btnCancel, _btnChat, _btnStoreChat;
 let _initialized = false;
 
 export function closeBookingModal() {
@@ -55,7 +62,9 @@ export function initBookingModal({ onStart, onEnd, onCancel } = {}) {
   _sheet     = document.getElementById('modal-sheet');
   _btnStart  = document.getElementById('modal-btn-start');
   _btnEnd    = document.getElementById('modal-btn-end');
-  _btnCancel = document.getElementById('modal-btn-cancel');
+  _btnCancel    = document.getElementById('modal-btn-cancel');
+  _btnChat      = document.getElementById('modal-btn-chat');
+  _btnStoreChat = document.getElementById('modal-btn-store-chat');
 
   _overlay.addEventListener('click', closeBookingModal);
   document.getElementById('modal-close').addEventListener('click', closeBookingModal);
@@ -93,8 +102,21 @@ export function openBookingModal(booking, { disableStart = false } = {}) {
   // ヘッダー
   document.getElementById('modal-time').textContent =
     `${booking.time} 〜 ${booking.outTime}`;
-  document.getElementById('modal-name').textContent =
-    `${booking.customerName} 様`;
+  const nameEl = document.getElementById('modal-name');
+  const talk = TALK_LIST.find(t => t.type === 'customer' && t.name === booking.customerName);
+  nameEl.textContent = `${booking.customerName} 様`;
+  if (talk) {
+    _btnChat.href = `chat_room.html?id=${talk.id}`;
+    _btnChat.style.display = '';
+  } else {
+    _btnChat.style.display = 'none';
+  }
+  if (booking.storeChatId) {
+    _btnStoreChat.href = `chat_room.html?id=${booking.storeChatId}`;
+    _btnStoreChat.style.display = '';
+  } else {
+    _btnStoreChat.style.display = 'none';
+  }
 
   // ノート
   const noteEl = document.getElementById('modal-note');

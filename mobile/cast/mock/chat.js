@@ -16,7 +16,8 @@
 export const TALK_LIST = [
   {
     id: '1',
-    name: 'タナカ',
+    type: 'customer',
+    name: 'ナカタ',
     initial: 'タ',
     lastMessage: 'また来週もぜひ伺いますね！',
     lastTime: '14:10',
@@ -25,6 +26,7 @@ export const TALK_LIST = [
   },
   {
     id: '2',
+    type: 'customer',
     name: 'スズキ',
     initial: 'ス',
     lastMessage: 'お待ちしています！',
@@ -34,6 +36,7 @@ export const TALK_LIST = [
   },
   {
     id: '3',
+    type: 'customer',
     name: 'サトウ',
     initial: 'サ',
     lastMessage: '今夜21時ごろ予約できますか？',
@@ -43,6 +46,7 @@ export const TALK_LIST = [
   },
   {
     id: '4',
+    type: 'customer',
     name: 'ナカムラ',
     initial: 'ナ',
     lastMessage: 'またのお越しをお待ちしています😊',
@@ -52,6 +56,7 @@ export const TALK_LIST = [
   },
   {
     id: '5',
+    type: 'customer',
     name: 'イトウ',
     initial: 'イ',
     lastMessage: 'お待ちしています！😊',
@@ -61,6 +66,7 @@ export const TALK_LIST = [
   },
   {
     id: '6',
+    type: 'customer',
     name: 'ヤマモト',
     initial: 'ヤ',
     lastMessage: 'ありがとうございます！楽しみにしています🙌',
@@ -70,6 +76,7 @@ export const TALK_LIST = [
   },
   {
     id: '7',
+    type: 'customer',
     name: 'コバヤシ',
     initial: 'コ',
     lastMessage: 'またのお越しお待ちしています😊',
@@ -79,6 +86,7 @@ export const TALK_LIST = [
   },
   {
     id: '8',
+    type: 'customer',
     name: 'カトウ',
     initial: 'カ',
     lastMessage: 'はい、いつでもどうぞ！',
@@ -88,6 +96,7 @@ export const TALK_LIST = [
   },
   {
     id: '9',
+    type: 'customer',
     name: 'ワタナベ',
     initial: 'ワ',
     lastMessage: 'お待ちしています！',
@@ -97,11 +106,43 @@ export const TALK_LIST = [
   },
   {
     id: '10',
+    type: 'customer',
     name: 'マツモト',
     initial: 'マ',
     lastMessage: 'ありがとうございます、またお待ちしています！',
     lastTime: '3/20',
     lastTimestamp: '2026-03-20T23:05:00',
+    unread: 0,
+  },
+  // 店舗チャット
+  {
+    id: 'store-1',
+    type: 'store',
+    name: '管理部（本店）',
+    initial: '管',
+    lastMessage: '今日のシフトに変更があります。確認お願いします',
+    lastTime: '16:42',
+    lastTimestamp: '2026-04-06T16:42:00',
+    unread: 1,
+  },
+  {
+    id: 'store-2',
+    type: 'store',
+    name: 'サカエスタッフ',
+    initial: 'ス',
+    lastMessage: '明日の指名予約入りました。よろしくお願いします',
+    lastTime: '昨日',
+    lastTimestamp: '2026-04-05T21:15:00',
+    unread: 0,
+  },
+  {
+    id: 'store-3',
+    type: 'store',
+    name: 'ナゴヤ店スタッフ',
+    initial: 'ナ',
+    lastMessage: 'お疲れ様でした！今日もありがとうございました',
+    lastTime: '4/5',
+    lastTimestamp: '2026-04-05T02:30:00',
     unread: 0,
   },
 ];
@@ -193,6 +234,41 @@ export const MESSAGES = {
     { date: '2026-03-20', messages: [
       { id: 'm1', sender: 'partner', text: 'お疲れ様でした！',                           time: '23:00', read: true },
       { id: 'm2', sender: 'me',      text: 'ありがとうございます、またお待ちしています！', time: '23:05', read: false },
+    ]},
+  ],
+  // 店舗チャット: unread:1 → 末尾に partner の未読1件 (今日)
+  'store-1': [
+    { date: '2026-04-05', messages: [
+      { id: 'm1', sender: 'partner', text: '明日のシフトですが、21時スタートでお願いします', time: '18:00', read: true },
+      { id: 'm2', sender: 'me',      text: 'わかりました、よろしくお願いします！',         time: '18:05', read: true },
+    ]},
+    { date: '2026-04-06', messages: [
+      { id: 'm3', sender: 'me',      text: 'おはようございます、本日もよろしくお願いします', time: '14:20', read: true },
+      { id: 'm4', sender: 'partner', text: 'こちらこそよろしくお願いします',               time: '14:35', read: true },
+      { id: 'm5', sender: 'partner', text: '今日のシフトに変更があります。確認お願いします', time: '16:42', read: false },
+    ]},
+  ],
+  // 店舗チャット: unread:0 → 末尾は me のメッセージ (昨日)
+  'store-2': [
+    { date: '2026-04-04', messages: [
+      { id: 'm1', sender: 'partner', text: '今週の出勤日を教えてもらえますか？',  time: '15:00', read: true },
+      { id: 'm2', sender: 'me',      text: '月・水・金の予定です',               time: '15:12', read: true },
+      { id: 'm3', sender: 'partner', text: 'ありがとうございます、了解しました', time: '15:15', read: true },
+    ]},
+    { date: '2026-04-05', messages: [
+      { id: 'm4', sender: 'partner', text: '明日の指名予約入りました。よろしくお願いします', time: '21:15', read: true },
+      { id: 'm5', sender: 'me',      text: 'ありがとうございます！しっかり対応します',     time: '21:20', read: false },
+    ]},
+  ],
+  // 店舗チャット: unread:0 → 末尾は partner のメッセージ (4/5)
+  'store-3': [
+    { date: '2026-04-04', messages: [
+      { id: 'm1', sender: 'partner', text: '本日はお疲れ様でした。指名も好調でしたよ！', time: '02:00', read: true },
+      { id: 'm2', sender: 'me',      text: 'ありがとうございます！励みになります😊',    time: '02:10', read: true },
+    ]},
+    { date: '2026-04-05', messages: [
+      { id: 'm3', sender: 'me',      text: '本日もよろしくお願いします！',             time: '19:00', read: true },
+      { id: 'm4', sender: 'partner', text: 'お疲れ様でした！今日もありがとうございました', time: '02:30', read: true },
     ]},
   ],
 };

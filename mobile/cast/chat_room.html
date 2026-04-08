@@ -13,14 +13,16 @@
 <div class="app-shell">
   <!-- Header -->
   <header class="app-header">
-    <button class="app-header__back" onclick="history.back()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-    </button>
     <span class="app-header__logo">SG</span>
     <span class="app-header__title" id="room-title"></span>
-    <span class="app-header__badge">仮画面</span>
+    <span class="app-header__badge">仓画面</span>
     <button class="app-header__action" onclick="logout()">ログアウト</button>
   </header>
+
+  <!-- 戻るボタン（app-shell内固定） -->
+  <button class="chat-back-btn" onclick="history.back()" aria-label="戻る">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
 
   <!-- Chat Body -->
   <main class="chat-body">

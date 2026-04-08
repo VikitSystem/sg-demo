@@ -662,8 +662,10 @@ html, body {
 /* ── Summary card size variant ── */
 .summary-card__value--sm { font-size: 16px; }
 
-/* ── Badge row (schedule badge summary) ── */
+/* ── Badge row (schedule badge summary / filter) ── */
 .badge-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.badge--btn { cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; }
+.badge--btn.badge--dim.is-active { color: var(--blue); background: rgba(122,162,255,0.14); border-color: rgba(122,162,255,0.3); }
 
 /* ── Profile page ── */
 .profile-badge-row { margin-top: 6px; display: flex; gap: 6px; }
@@ -686,6 +688,29 @@ html, body {
   transition: color 0.15s;
 }
 .app-header__back:hover { color: var(--text); }
+
+/* ── Chat back button (fixed, top-left of body) ── */
+.chat-back-btn {
+  position: absolute;
+  top: calc(var(--header-h) + 10px);
+  left: 14px;
+  z-index: 200;
+  background: rgba(17, 21, 34, 0.3);
+  border: 1px solid rgba(255,255,255,0.07);
+  color: var(--muted);
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: color 0.15s, background 0.15s;
+}
+.chat-back-btn:hover { color: var(--text); background: rgba(17, 21, 34, 0.75); }
 
 /* ── Chat List (chat.html) ── */
 .talk-item {

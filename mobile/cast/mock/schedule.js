@@ -27,6 +27,7 @@ const RAW_BOOKINGS = [
     time: '19:00',
     outTime: '20:40',
     customerName: 'ナカタ',
+    storeChatId: 'store-1',
     shopId: '01',
     courseId: 'course_01_00',     // 60分
     extensionId: 'ext_01_01',     // 30分
@@ -42,6 +43,7 @@ const RAW_BOOKINGS = [
     time: '21:30',
     outTime: '23:00',
     customerName: 'ナカムラ',
+    storeChatId: 'store-2',
     shopId: '01',
     courseId: 'course_01_01',     // 90分
     extensionId: 'ext_01_00',     // なし
@@ -57,6 +59,7 @@ const RAW_BOOKINGS = [
     time: '23:30',
     outTime: '01:00',
     customerName: 'サトウ',
+    storeChatId: 'store-3',
     shopId: '01',
     courseId: 'course_01_00',     // 60分
     extensionId: 'ext_01_00',     // なし

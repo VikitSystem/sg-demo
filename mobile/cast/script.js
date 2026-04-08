@@ -569,28 +569,49 @@ if (document.getElementById('prev-month')) {
 if (document.getElementById('talk-list')) {
   const { TALK_LIST } = await import('./mock/chat.js');
 
-  const sortedTalks = [...TALK_LIST].sort((a, b) => {
-    const aUnread = a.unread > 0 ? 1 : 0;
-    const bUnread = b.unread > 0 ? 1 : 0;
-    if (bUnread !== aUnread) return bUnread - aUnread;
-    return new Date(b.lastTimestamp) - new Date(a.lastTimestamp);
-  });
+  // mock データの type フィールドをそのまま利用
+  const talksWithType = TALK_LIST;
 
-  document.getElementById('talk-list').innerHTML = sortedTalks.map(t => `
-    <a class="talk-item" href="chat_room.html?id=${t.id}">
-      <div class="talk-avatar">${t.initial}</div>
-      <div class="talk-body">
-        <div class="talk-header">
-          <span class="talk-name">${t.name}</span>
-          <span class="talk-time">${t.lastTime}</span>
+  function sortTalks(list) {
+    return [...list].sort((a, b) => {
+      const aUnread = a.unread > 0 ? 1 : 0;
+      const bUnread = b.unread > 0 ? 1 : 0;
+      if (bUnread !== aUnread) return bUnread - aUnread;
+      return new Date(b.lastTimestamp) - new Date(a.lastTimestamp);
+    });
+  }
+
+  function renderTalkList(filter) {
+    const filtered = filter === 'all'
+      ? talksWithType
+      : talksWithType.filter(t => t.type === filter);
+    const sorted = sortTalks(filtered);
+    document.getElementById('talk-list').innerHTML = sorted.map(t => `
+      <a class="talk-item" href="chat_room.html?id=${t.id}">
+        <div class="talk-avatar">${t.initial}</div>
+        <div class="talk-body">
+          <div class="talk-header">
+            <span class="talk-name">${t.name}</span>
+            <span class="talk-time">${t.lastTime}</span>
+          </div>
+          <div class="talk-footer">
+            <span class="talk-preview">${t.lastMessage}</span>
+            ${t.unread > 0 ? `<span class="talk-unread">${t.unread}</span>` : ''}
+          </div>
         </div>
-        <div class="talk-footer">
-          <span class="talk-preview">${t.lastMessage}</span>
-          ${t.unread > 0 ? `<span class="talk-unread">${t.unread}</span>` : ''}
-        </div>
-      </div>
-    </a>
-  `).join('');
+      </a>
+    `).join('') || '<p style="padding:24px 16px;color:var(--dim);font-size:13px;">該当するチャットはありません</p>';
+  }
+
+  renderTalkList('all');
+
+  document.getElementById('chat-filter').addEventListener('click', e => {
+    const btn = e.target.closest('[data-filter]');
+    if (!btn) return;
+    document.querySelectorAll('#chat-filter [data-filter]').forEach(el => el.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    renderTalkList(btn.dataset.filter);
+  });
 }
 
 // ═══════════════════════════════════════════════
