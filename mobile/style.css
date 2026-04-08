@@ -25,7 +25,8 @@
 }
 
 html, body {
-  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
@@ -39,7 +40,7 @@ html, body {
 .app-shell {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
   max-width: 480px;
   margin: 0 auto;
   position: relative;
@@ -47,13 +48,7 @@ html, body {
 
 /* ── App Header ── */
 .app-header {
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 480px;
-  z-index: 100;
+  flex-shrink: 0;
   background: rgba(11,13,18,0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -63,6 +58,7 @@ html, body {
   align-items: center;
   padding: 0 16px;
   gap: 10px;
+  z-index: 100;
 }
 .app-header__logo {
   font-size: 18px;
@@ -105,28 +101,16 @@ html, body {
 /* ── App Body ── */
 .app-body {
   flex: 1;
-  padding-top: calc(var(--header-h) + 16px);
-  padding-bottom: calc(var(--nav-h) + 16px);
-  padding-left: 16px;
-  padding-right: 16px;
+  padding: 16px;
   overflow-y: auto;
 }
 .app-body--flush {
-  padding-top: var(--header-h);
-  padding-bottom: var(--nav-h);
-  padding-left: 0;
-  padding-right: 0;
+  padding: 0;
 }
 
 /* ── Bottom Navigation ── */
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 480px;
-  z-index: 100;
+  flex-shrink: 0;
   height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0));
   padding-bottom: env(safe-area-inset-bottom, 0);
   background: rgba(17,21,34,0.96);
@@ -135,6 +119,7 @@ html, body {
   border-top: 1px solid var(--line);
   display: flex;
   align-items: stretch;
+  z-index: 100;
 }
 .bottom-nav__item {
   flex: 1;
@@ -767,10 +752,7 @@ html, body {
 /* ── Chat Room (chat_room.html) ── */
 .chat-body {
   flex: 1;
-  padding-top: calc(var(--header-h) + 12px);
-  padding-bottom: calc(var(--nav-h) + 60px);
-  padding-left: 0;
-  padding-right: 0;
+  padding: 12px 0;
   overflow-y: auto;
 }
 .chat-list {
@@ -851,12 +833,7 @@ html, body {
 .chat-read { font-size: 10px; color: var(--blue); }
 
 .chat-input-bar {
-  position: fixed;
-  bottom: var(--nav-h);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 480px;
+  flex-shrink: 0;
   background: rgba(17,21,34,0.96);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -899,22 +876,23 @@ html, body {
 .app-body,
 .chat-body {
   scrollbar-width: thin;
-  scrollbar-color: rgba(107,120,148,0.35) transparent;
+  scrollbar-color: #3a4260 #111522;
 }
 .app-body::-webkit-scrollbar,
 .chat-body::-webkit-scrollbar {
-  width: 3px;
+  width: 4px;
 }
 .app-body::-webkit-scrollbar-track,
 .chat-body::-webkit-scrollbar-track {
-  background: transparent;
+  background: #111522;
+  border-radius: 4px;
 }
 .app-body::-webkit-scrollbar-thumb,
 .chat-body::-webkit-scrollbar-thumb {
-  background: rgba(107,120,148,0.35);
-  border-radius: 3px;
+  background: #3a4260;
+  border-radius: 4px;
 }
 .app-body::-webkit-scrollbar-thumb:hover,
 .chat-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(107,120,148,0.6);
+  background: #5a6480;
 }
