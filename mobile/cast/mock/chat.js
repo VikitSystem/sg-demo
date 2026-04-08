@@ -115,55 +115,68 @@ export const TALK_LIST = [
     unread: 0,
   },
   // 予約チャット
+  // store-1 ← b001 ナカタ 19:00〜20:40 60分+30延長 ホテル1 田中 富安ドライバー 完了
   {
     id: 'store-1',
     type: 'booking',
-    name: '管理部（本店）',
+    name: '2026/4/6 19:00 ナカタ様',
     initial: '管',
-    lastMessage: '今日のシフトに変更があります。確認お願いします',
-    lastTime: '16:42',
-    lastTimestamp: '2026-04-06T16:42:00',
-    unread: 1,
+    lastMessage: 'ありがとうございます！お疲れ様でした😊',
+    lastTime: '20:55',
+    lastTimestamp: '2026-04-06T20:55:00',
+    unread: 0,
   },
+  // store-2 ← b002 ナカムラ 21:30〜23:00 90分 ホテル2 佐藤 鉢呂ドライバー 進行中
   {
     id: 'store-2',
     type: 'booking',
-    name: 'サカエスタッフ',
+    name: '2026/4/6 21:30 ナカムラ様',
     initial: 'ス',
-    lastMessage: '明日の指名予約入りました。よろしくお願いします',
-    lastTime: '昨日',
-    lastTimestamp: '2026-04-05T21:15:00',
+    lastMessage: '出発しました！よろしくお願いします',
+    lastTime: '21:28',
+    lastTimestamp: '2026-04-06T21:28:00',
     unread: 0,
   },
+  // store-3 ← b003 サトウ 23:30〜01:00 60分 ホテル1 田中 送迎なし 予定
   {
     id: 'store-3',
     type: 'booking',
-    name: 'ナゴヤ店スタッフ',
+    name: '2026/4/6 23:30 サトウ様',
     initial: 'ナ',
-    lastMessage: 'お疲れ様でした！今日もありがとうございました',
-    lastTime: '4/5',
-    lastTimestamp: '2026-04-05T02:30:00',
-    unread: 0,
+    lastMessage: 'サトウ様のご予約です。本日23:30〜 60分コース、ホテル1デリバリーです',
+    lastTime: '21:05',
+    lastTimestamp: '2026-04-06T21:05:00',
+    unread: 1,
   },
   // 店舗チャット
   {
     id: 'sg-1',
     type: 'store',
-    name: 'SG 全体連絡',
+    name: 'ごほうび○○店/店舗連絡',
     initial: 'SG',
-    lastMessage: '来月のキャンペーンについてお知らせします',
+    lastMessage: '来週のシフト提出をお願いいたします',
     lastTime: '20:10',
     lastTimestamp: '2026-04-06T20:10:00',
-    unread: 2,
+    unread: 1,
+  },
+  {
+    id: 'sg-4',
+    type: 'store',
+    name: '富安ドライバー',
+    initial: '富',
+    lastMessage: '今向かいます。',
+    lastTime: '18:50',
+    lastTimestamp: '2026-04-06T18:50:00',
+    unread: 0,
   },
   {
     id: 'sg-2',
     type: 'store',
-    name: '内勤スタッフ',
+    name: '鉢呂ドライバー',
     initial: '内',
-    lastMessage: '給与明細を送付しました。ご確認ください',
+    lastMessage: '今向かいます。',
     lastTime: '昨日',
-    lastTimestamp: '2026-04-05T17:30:00',
+    lastTimestamp: '2026-04-05T17:45:00',
     unread: 0,
   },
   {
@@ -171,9 +184,9 @@ export const TALK_LIST = [
     type: 'store',
     name: 'イベント連絡',
     initial: 'イ',
-    lastMessage: '来週のイベント詳細です。参加可能かご確認ください',
+    lastMessage: '日時：4月13日(日) ~ 4月20日(日) : コスプレ無料',
     lastTime: '4/5',
-    lastTimestamp: '2026-04-05T11:00:00',
+    lastTimestamp: '2026-04-05T11:01:00',
     unread: 2,
   },
 ];
@@ -267,57 +280,57 @@ export const MESSAGES = {
       { id: 'm2', sender: 'me',      text: 'ありがとうございます、またお待ちしています！', time: '23:05', read: false },
     ]},
   ],
-  // 店舗チャット: unread:1 → 末尾に partner の未読1件 (今日)
+  // 予約チャット: store-1 ← b001 ナカタ 19:00〜20:40 60分+30延長 ホテル1 田中 富安ドライバー 完了
+  // unread:0 → 末尾は me のメッセージ
   'store-1': [
-    { date: '2026-04-05', messages: [
-      { id: 'm1', sender: 'partner', text: '明日のシフトですが、21時スタートでお願いします', time: '18:00', read: true },
-      { id: 'm2', sender: 'me',      text: 'わかりました、よろしくお願いします！',         time: '18:05', read: true },
-    ]},
     { date: '2026-04-06', messages: [
-      { id: 'm3', sender: 'me',      text: 'おはようございます、本日もよろしくお願いします', time: '14:20', read: true },
-      { id: 'm4', sender: 'partner', text: 'こちらこそよろしくお願いします',               time: '14:35', read: true },
-      { id: 'm5', sender: 'partner', text: '今日のシフトに変更があります。確認お願いします', time: '16:42', read: false },
+      { id: 'm1', sender: 'partner', text: 'ナカタ様のご予約確認です。本日19:00〜 60分コース＋30分延長、ホテル1へのデリバリーです', time: '15:30', read: true },
+      { id: 'm2', sender: 'me',      text: '確認しました！担当は田中さん、富安ドライバーさんですね。よろしくお願いします',         time: '15:35', read: true },
+      { id: 'm3', sender: 'partner', text: 'はい。ナカタ様は常連のお客様です。よろしくお願いします',                             time: '15:37', read: true },
+      { id: 'm4', sender: 'me',      text: '接客終了しました。ナカタ様に喜んでいただけました😊',                               time: '20:45', read: true },
+      { id: 'm5', sender: 'partner', text: 'ナカタ様の接客お疲れ様でした！',         time: '20:52', read: true },
+      { id: 'm6', sender: 'me',      text: 'ありがとうございます！お疲れ様でした😊', time: '20:55', read: false },
     ]},
   ],
-  // 店舗チャット: unread:0 → 末尾は me のメッセージ (昨日)
+  // 予約チャット: store-2 ← b002 ナカムラ 21:30〜23:00 90分 ホテル2 佐藤 鉢呂ドライバー 進行中
+  // unread:0 → 末尾は me のメッセージ
   'store-2': [
-    { date: '2026-04-04', messages: [
-      { id: 'm1', sender: 'partner', text: '今週の出勤日を教えてもらえますか？',  time: '15:00', read: true },
-      { id: 'm2', sender: 'me',      text: '月・水・金の予定です',               time: '15:12', read: true },
-      { id: 'm3', sender: 'partner', text: 'ありがとうございます、了解しました', time: '15:15', read: true },
-    ]},
-    { date: '2026-04-05', messages: [
-      { id: 'm4', sender: 'partner', text: '明日の指名予約入りました。よろしくお願いします', time: '21:15', read: true },
-      { id: 'm5', sender: 'me',      text: 'ありがとうございます！しっかり対応します',     time: '21:20', read: false },
+    { date: '2026-04-06', messages: [
+      { id: 'm1', sender: 'partner', text: 'ナカムラ様のご予約です。本日21:30〜 90分コース、ホテル2デリバリーです',     time: '17:00', read: true },
+      { id: 'm2', sender: 'partner', text: '初回のお客様です。担当スタッフ佐藤、送迎は鉢呂ドライバーです',             time: '17:01', read: true },
+      { id: 'm3', sender: 'me',      text: '確認しました！初回のお客様ですね、しっかり対応します',                     time: '17:10', read: true },
+      { id: 'm4', sender: 'partner', text: '鉢呂ドライバーが21:25頃お迎えに行きます',                               time: '21:15', read: true },
+      { id: 'm5', sender: 'me',      text: '出発しました！よろしくお願いします',                                     time: '21:28', read: false },
     ]},
   ],
-  // 予約チャット: unread:0 → 末尾は partner のメッセージ (4/5)
+  // 予約チャット: store-3 ← b003 サトウ 23:30〜01:00 60分 ホテル1 田中 送迎なし 予定
+  // unread:1 → 末尾に partner の未読1件
   'store-3': [
-    { date: '2026-04-04', messages: [
-      { id: 'm1', sender: 'partner', text: '本日はお疲れ様でした。指名も好調でしたよ！', time: '02:00', read: true },
-      { id: 'm2', sender: 'me',      text: 'ありがとうございます！励みになります😊',    time: '02:10', read: true },
-    ]},
-    { date: '2026-04-05', messages: [
-      { id: 'm3', sender: 'me',      text: '本日もよろしくお願いします！',             time: '19:00', read: true },
-      { id: 'm4', sender: 'partner', text: 'お疲れ様でした！今日もありがとうございました', time: '02:30', read: true },
+    { date: '2026-04-06', messages: [
+      { id: 'm1', sender: 'partner', text: 'サトウ様のご予約です。本日23:30〜 60分コース、ホテル1デリバリーです',       time: '21:05', read: false },
     ]},
   ],
   'sg-1': [
     { date: '2026-04-06', messages: [
-      { id: 'm1', sender: 'partner', text: '来月のキャンペーンについてお知らせします。詳細は別途資料を共有します', time: '20:10', read: false },
-      { id: 'm2', sender: 'partner', text: '期間：5月1日〜5月31日、対象：全キャスト', time: '20:11', read: false },
+      { id: 'm1', sender: 'partner', text: '来週のシフト提出をお願いいたします', time: '20:10', read: false },
+    ]},
+  ],
+  'sg-4': [
+    { date: '2026-04-06', messages: [
+      { id: 'm1', sender: 'partner', text: 'セブンイレブンの前でお待ちしています', time: '18:45', read: true },
+      { id: 'm2', sender: 'me',      text: '今向かいます。',                       time: '18:50', read: true },
     ]},
   ],
   'sg-2': [
     { date: '2026-04-05', messages: [
-      { id: 'm1', sender: 'partner', text: '4月分の給与明細を送付しました。ご確認ください', time: '17:30', read: true },
-      { id: 'm2', sender: 'me',      text: '確認しました。ありがとうございます',             time: '17:45', read: true },
+      { id: 'm1', sender: 'partner', text: 'ファミリーマートの前でお待ちしています', time: '17:30', read: true },
+      { id: 'm2', sender: 'me',      text: '今向かいます。',                        time: '17:45', read: true },
     ]},
   ],
   'sg-3': [
     { date: '2026-04-05', messages: [
-      { id: 'm1', sender: 'partner', text: '来週のイベント詳細です。参加可能かご確認ください', time: '11:00', read: false },
-      { id: 'm2', sender: 'partner', text: '日時：4月13日(日) 20:00〜 / 場所：本店VIPルーム',  time: '11:01', read: false },
+      { id: 'm1', sender: 'partner', text: '来週のイベント詳細です。', time: '11:00', read: false },
+      { id: 'm2', sender: 'partner', text: '日時：4月13日(日) ~ 4月20日(日) : コスプレ無料',  time: '11:01', read: false },
     ]},
   ],
 };

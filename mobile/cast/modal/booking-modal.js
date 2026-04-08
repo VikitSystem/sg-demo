@@ -19,15 +19,11 @@ const MODAL_HTML = `
         <div class="modal-sheet__title" id="modal-name"></div>
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0;">
+        <a id="modal-btn-driver-chat" href="#" style="display:none;font-size:12px;color:var(--amber);background:transparent;border:1px solid rgba(255,194,107,0.4);border-radius:4px;padding:4px 12px;text-decoration:none;white-space:nowrap;font-family:var(--font);">ドライバー</a>
         <a id="modal-btn-store-chat" href="#" style="display:none;font-size:12px;color:var(--green);background:transparent;border:1px solid rgba(95,226,162,0.4);border-radius:4px;padding:4px 12px;text-decoration:none;white-space:nowrap;font-family:var(--font);">予約チャット</a>
         <a id="modal-btn-chat" href="#" style="display:none;font-size:12px;color:var(--blue);background:transparent;border:1px solid rgba(122,162,255,0.4);border-radius:4px;padding:4px 12px;text-decoration:none;white-space:nowrap;font-family:var(--font);">顧客チャット</a>
       </div>
     </div>
-    <button class="modal-sheet__close" id="modal-close" aria-label="閉じる">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-      </svg>
-    </button>
   </div>
   <div class="modal-sheet__body">
     <div id="modal-note" style="display:none;font-size:12px;color:var(--amber);margin-bottom:12px;"></div>
@@ -40,7 +36,7 @@ const MODAL_HTML = `
   </div>
 </div>`;
 
-let _overlay, _sheet, _btnStart, _btnEnd, _btnCancel, _btnChat, _btnStoreChat;
+let _overlay, _sheet, _btnStart, _btnEnd, _btnCancel, _btnChat, _btnStoreChat, _btnDriverChat;
 let _initialized = false;
 
 export function closeBookingModal() {
@@ -63,11 +59,11 @@ export function initBookingModal({ onStart, onEnd, onCancel } = {}) {
   _btnStart  = document.getElementById('modal-btn-start');
   _btnEnd    = document.getElementById('modal-btn-end');
   _btnCancel    = document.getElementById('modal-btn-cancel');
-  _btnChat      = document.getElementById('modal-btn-chat');
-  _btnStoreChat = document.getElementById('modal-btn-store-chat');
+  _btnChat        = document.getElementById('modal-btn-chat');
+  _btnStoreChat   = document.getElementById('modal-btn-store-chat');
+  _btnDriverChat  = document.getElementById('modal-btn-driver-chat');
 
   _overlay.addEventListener('click', closeBookingModal);
-  document.getElementById('modal-close').addEventListener('click', closeBookingModal);
 
   let _current = null;
 
@@ -118,6 +114,13 @@ export function openBookingModal(booking, { disableStart = false } = {}) {
     _btnStoreChat.style.display = '';
   } else {
     _btnStoreChat.style.display = 'none';
+  }
+  if (booking.driverChatId) {
+    const returnPage = location.pathname.split('/').pop() || 'home.html';
+    _btnDriverChat.href = `chat_room.html?id=${booking.driverChatId}&returnPage=${returnPage}&returnModal=${booking.id}`;
+    _btnDriverChat.style.display = '';
+  } else {
+    _btnDriverChat.style.display = 'none';
   }
 
   // ノート

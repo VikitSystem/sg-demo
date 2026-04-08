@@ -28,6 +28,7 @@ const RAW_BOOKINGS = [
     outTime: '20:40',
     customerName: 'ナカタ',
     storeChatId: 'store-1',
+    driverChatId: 'sg-4',   // 富安ドライバー
     shopId: '01',
     courseId: 'course_01_00',     // 60分
     extensionId: 'ext_01_01',     // 30分
@@ -44,6 +45,7 @@ const RAW_BOOKINGS = [
     outTime: '23:00',
     customerName: 'ナカムラ',
     storeChatId: 'store-2',
+    driverChatId: 'sg-2',   // 鉢呂ドライバー
     shopId: '01',
     courseId: 'course_01_01',     // 90分
     extensionId: 'ext_01_00',     // なし
