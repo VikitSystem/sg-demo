@@ -90,7 +90,7 @@ if (document.getElementById('next-booking')) {
             ${statusBadge}
           </div>
           <div style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px;">${featured.customerName} 様</div>
-          <div style="font-size:13px;color:var(--muted);">${featured.courseLabel}${extPart} &nbsp;|&nbsp; ${featured.deliveryLabel}</div>
+          <div style="font-size:13px;color:var(--muted);">${featured.courseLabel}${extPart} &nbsp;|&nbsp; ${featured.deliveryLabel} &nbsp;|&nbsp; ¥${featured.totalPrice.toLocaleString()}</div>
           ${noteHtml}
           <div style="display:flex;gap:8px;margin-top:14px;">
             <div style="flex:1;background:var(--deep);border-radius:8px;padding:8px 10px;">
@@ -133,7 +133,7 @@ if (document.getElementById('next-booking')) {
             ${b.customerName} 様
             ${STATUS_BADGE_INLINE[b.status] ?? ''}
           </div>
-          <div class="booking-item__detail">${b.courseLabel}${extPart} &nbsp;|&nbsp; ${b.deliveryLabel}</div>
+          <div class="booking-item__detail">${b.courseLabel}${extPart} &nbsp;|&nbsp; ${b.deliveryLabel} &nbsp;|&nbsp; ¥${b.totalPrice.toLocaleString()}</div>
           ${noteHtml}
         </div>
       </div>`;

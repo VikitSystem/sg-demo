@@ -9,6 +9,7 @@ import {
   EXTENSION_OPTIONS,
   DELIVERY_TYPE_OPTIONS,
   CAR_OPTIONS,
+  NOMINATIONS,
 } from '../../../mock/bookingselect.js';
 
 /**
@@ -82,13 +83,22 @@ function labelById(arr, id) {
 }
 
 /** IDからラベルを解決した予約データ */
-export const TODAY_BOOKINGS = RAW_BOOKINGS.map(b => ({
-  ...b,
-  courseLabel:    labelById(COURSE_OPTIONS[b.shopId] ?? [], b.courseId),
-  extensionLabel: labelById(EXTENSION_OPTIONS[b.shopId] ?? [], b.extensionId),
-  deliveryLabel:  labelById(DELIVERY_TYPE_OPTIONS, b.deliveryTypeId),
-  staffLabel:     labelById(STAFF_OPTIONS, b.staffId),
-  carGoingLabel:  labelById(CAR_OPTIONS, b.carGoingId),
-  carReturnLabel: labelById(CAR_OPTIONS, b.carReturnId),
-}));
+export const TODAY_BOOKINGS = RAW_BOOKINGS.map(b => {
+  const coursePrice = (COURSE_OPTIONS[b.shopId] ?? []).find(c => c.id === b.courseId)?.price ?? 0;
+  const extPrice    = (EXTENSION_OPTIONS[b.shopId] ?? []).find(e => e.id === b.extensionId)?.price ?? 0;
+  const nom         = NOMINATIONS[b.nominationLabel] ?? {};
+  const nomPrice    = (nom.membershipFee ?? 0) + (nom.nominationFee ?? 0);
+  const totalPrice  = coursePrice + extPrice + nomPrice;
+  return {
+    ...b,
+    courseLabel:    labelById(COURSE_OPTIONS[b.shopId] ?? [], b.courseId),
+    extensionLabel: labelById(EXTENSION_OPTIONS[b.shopId] ?? [], b.extensionId),
+    deliveryLabel:  labelById(DELIVERY_TYPE_OPTIONS, b.deliveryTypeId),
+    staffLabel:     labelById(STAFF_OPTIONS, b.staffId),
+    carGoingLabel:  labelById(CAR_OPTIONS, b.carGoingId),
+    carReturnLabel: labelById(CAR_OPTIONS, b.carReturnId),
+    totalPrice,
+    castSalary: Math.floor(totalPrice / 2),
+  };
+});
 
