@@ -38,7 +38,7 @@ html, body {
 
 /* ── App Shell ── */
 .app-shell {
-  height: 100vh;
+  height: 100dvh;
   max-width: 480px;
   margin: 0 auto;
   position: relative;
@@ -103,7 +103,7 @@ html, body {
 
 /* ── App Body ── */
 .app-body {
-  height: 100vh;
+  height: 100dvh;
   box-sizing: border-box;
   padding: var(--header-h) 16px calc(var(--nav-h) + env(safe-area-inset-bottom, 0));
   overflow-y: auto;
@@ -429,7 +429,7 @@ html, body {
 
 /* ── Login Page ── */
 .login-wrap {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -796,7 +796,7 @@ html, body {
 
 /* ── Chat Room (chat_room.html) ── */
 .chat-body {
-  height: 100vh;
+  height: 100dvh;
   box-sizing: border-box;
   padding: calc(var(--header-h) + 12px) 0 calc(var(--nav-h) + 60px + env(safe-area-inset-bottom, 0) + 12px);
   overflow-y: auto;

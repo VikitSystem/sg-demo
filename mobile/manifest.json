@@ -1,0 +1,16 @@
+{
+  "name": "SG キャストポータル",
+  "short_name": "SG Cast",
+  "start_url": "./cast/login.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0d12",
+  "theme_color": "#0b0d12",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%230b0d12'/%3E%3Ctext x='96' y='130' font-size='100' font-family='sans-serif' font-weight='bold' fill='%237aa2ff' text-anchor='middle'%3ESG%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}
