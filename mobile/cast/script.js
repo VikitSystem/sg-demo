@@ -179,7 +179,12 @@ if (document.getElementById('next-booking')) {
     const hasOtherActive = TODAY_BOOKINGS.some(b => b.status === 'active' && b.id !== booking.id);
     openBookingModal(booking, { disableStart: hasOtherActive });
   });
-}
+  // ?openModal=bookingId の時は自動おお設開モーダル
+  const _openModalId1 = new URLSearchParams(location.search).get('openModal');
+  if (_openModalId1) {
+    const _target1 = bookingMap.get(_openModalId1);
+    if (_target1) openBookingModal(_target1, { disableStart: TODAY_BOOKINGS.some(b => b.status === 'active' && b.id !== _target1.id) });
+  }}
 
 // ═══════════════════════════════════════════════
 // 予約一覧ページ  (#booking-list が存在する場合)
@@ -325,7 +330,12 @@ if (document.getElementById('booking-list')) {
     const hasOtherActive = TODAY_BOOKINGS.some(b => b.status === 'active' && b.id !== booking.id);
     openBookingModal(booking, { disableStart: hasOtherActive });
   });
-}
+  // ?openModal=bookingId の時は自動おお設開モーダル
+  const _openModalId2 = new URLSearchParams(location.search).get('openModal');
+  if (_openModalId2) {
+    const _target2 = bookingMap.get(_openModalId2);
+    if (_target2) openBookingModal(_target2, { disableStart: TODAY_BOOKINGS.some(b => b.status === 'active' && b.id !== _target2.id) });
+  }}
 
 // ═══════════════════════════════════════════════
 // 勤怠ページ  (#clock が存在する場合)
@@ -581,14 +591,24 @@ if (document.getElementById('talk-list')) {
     });
   }
 
+  // URLパラメータから初期フィルターを復元
+  const _initFilter = new URLSearchParams(location.search).get('filter') || 'all';
+  let _currentFilter = _initFilter;
+
+  // フィルターボタンの初期状態を復元
+  document.querySelectorAll('#chat-filter [data-filter]').forEach(el => {
+    el.classList.toggle('is-active', el.dataset.filter === _initFilter);
+  });
+
   function renderTalkList(filter) {
+    _currentFilter = filter;
     const filtered = filter === 'all'
       ? talksWithType
       : talksWithType.filter(t => t.type === filter);
     const sorted = sortTalks(filtered);
     document.getElementById('talk-list').innerHTML = sorted.map(t => `
-      <a class="talk-item" href="chat_room.html?id=${t.id}">
-        <div class="talk-avatar">${t.initial}</div>
+      <a class="talk-item" href="chat_room.html?id=${t.id}&returnPage=chat.html&returnFilter=${filter}">
+        <div class="talk-avatar talk-avatar--${t.type}">${t.initial}</div>
         <div class="talk-body">
           <div class="talk-header">
             <span class="talk-name">${t.name}</span>
@@ -603,7 +623,7 @@ if (document.getElementById('talk-list')) {
     `).join('') || '<p style="padding:24px 16px;color:var(--dim);font-size:13px;">該当するチャットはありません</p>';
   }
 
-  renderTalkList('all');
+  renderTalkList(_initFilter);
 
   document.getElementById('chat-filter').addEventListener('click', e => {
     const btn = e.target.closest('[data-filter]');
@@ -633,7 +653,7 @@ if (document.getElementById('chat-list')) {
       const showName = !isMe && i === 0;
       return `
         <div class="chat-row${isMe ? ' chat-row--me' : ''}">
-          <div class="chat-avatar${isMe ? ' chat-avatar--me' : ''}">${isMe ? 'あ' : partner.initial}</div>
+          <div class="chat-avatar${isMe ? ' chat-avatar--me' : ` chat-avatar--${partner.type}`}">${isMe ? 'あ' : partner.initial}</div>
           <div class="chat-bubble-wrap">
             ${showName ? `<span class="chat-msg-name">${partner.name}</span>` : ''}
             <span class="chat-bubble${isMe ? ' chat-bubble--me' : ''}">${msg.text}</span>

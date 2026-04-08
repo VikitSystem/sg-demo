@@ -106,13 +106,15 @@ export function openBookingModal(booking, { disableStart = false } = {}) {
   const talk = TALK_LIST.find(t => t.type === 'customer' && t.name === booking.customerName);
   nameEl.textContent = `${booking.customerName} 様`;
   if (talk) {
-    _btnChat.href = `chat_room.html?id=${talk.id}`;
+    const _returnPage = location.pathname.split('/').pop() || 'home.html';
+    _btnChat.href = `chat_room.html?id=${talk.id}&returnPage=${_returnPage}&returnModal=${booking.id}`;
     _btnChat.style.display = '';
   } else {
     _btnChat.style.display = 'none';
   }
   if (booking.storeChatId) {
-    _btnStoreChat.href = `chat_room.html?id=${booking.storeChatId}`;
+    const returnPage = location.pathname.split('/').pop() || 'home.html';
+    _btnStoreChat.href = `chat_room.html?id=${booking.storeChatId}&returnPage=${returnPage}&returnModal=${booking.id}`;
     _btnStoreChat.style.display = '';
   } else {
     _btnStoreChat.style.display = 'none';

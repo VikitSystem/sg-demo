@@ -665,7 +665,10 @@ html, body {
 /* ── Badge row (schedule badge summary / filter) ── */
 .badge-row { display: flex; gap: 8px; margin-bottom: 14px; }
 .badge--btn { cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; }
-.badge--btn.badge--dim.is-active { color: var(--blue); background: rgba(122,162,255,0.14); border-color: rgba(122,162,255,0.3); }
+.badge--btn.badge--dim.is-active                          { color: var(--dim);   background: rgba(107,120,148,0.28); border-color: rgba(107,120,148,0.55); }
+#chat-filter [data-filter="customer"].badge--btn.is-active { color: var(--blue);  background: rgba(122,162,255,0.14); border-color: rgba(122,162,255,0.3);  }
+#chat-filter [data-filter="booking"].badge--btn.is-active  { color: var(--green); background: rgba(95,226,162,0.12);  border-color: rgba(95,226,162,0.28);  }
+#chat-filter [data-filter="store"].badge--btn.is-active    { color: var(--amber); background: rgba(255,194,107,0.12); border-color: rgba(255,194,107,0.28); }
 
 /* ── Profile page ── */
 .profile-badge-row { margin-top: 6px; display: flex; gap: 6px; }
@@ -741,6 +744,9 @@ html, body {
   flex-shrink: 0;
   border: 1px solid var(--line);
 }
+.talk-avatar--customer { border-color: rgba(122,162,255,0.5);  color: var(--blue);  }
+.talk-avatar--booking  { border-color: rgba(95,226,162,0.5);   color: var(--green); }
+.talk-avatar--store    { border-color: rgba(255,194,107,0.5);  color: var(--amber); }
 .talk-body   { flex: 1; min-width: 0; }
 .talk-header {
   display: flex;
@@ -819,6 +825,9 @@ html, body {
   color: #0b0d12;
   border: none;
 }
+.chat-avatar--customer { border-color: rgba(122,162,255,0.5);  color: var(--blue);  }
+.chat-avatar--booking  { border-color: rgba(95,226,162,0.5);   color: var(--green); }
+.chat-avatar--store    { border-color: rgba(255,194,107,0.5);  color: var(--amber); }
 .chat-bubble-wrap {
   display: flex;
   flex-direction: column;

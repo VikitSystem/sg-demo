@@ -5,6 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>チャット — SG キャスト</title>
   <link rel="stylesheet" href="../style.css" />
+<script>
+function goBack() {
+  const params = new URLSearchParams(location.search);
+  const returnPage = params.get('returnPage');
+  const returnModal = params.get('returnModal');
+  const returnFilter = params.get('returnFilter');
+  if (returnPage && returnModal) {
+    location.href = returnPage + '?openModal=' + returnModal;
+  } else if (returnPage === 'chat.html' && returnFilter) {
+    location.href = 'chat.html?filter=' + returnFilter;
+  } else if (returnPage) {
+    location.href = returnPage;
+  } else {
+    location.href = 'chat.html';
+  }
+}
+</script>
 </head>
 <body>
 <script src="auth.js"></script>
@@ -20,7 +37,7 @@
   </header>
 
   <!-- 戻るボタン（app-shell内固定） -->
-  <button class="chat-back-btn" onclick="history.back()" aria-label="戻る">
+  <button class="chat-back-btn" onclick="goBack()" aria-label="戻る">
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
   </button>
 

@@ -114,10 +114,10 @@ export const TALK_LIST = [
     lastTimestamp: '2026-03-20T23:05:00',
     unread: 0,
   },
-  // 店舗チャット
+  // 予約チャット
   {
     id: 'store-1',
-    type: 'store',
+    type: 'booking',
     name: '管理部（本店）',
     initial: '管',
     lastMessage: '今日のシフトに変更があります。確認お願いします',
@@ -127,7 +127,7 @@ export const TALK_LIST = [
   },
   {
     id: 'store-2',
-    type: 'store',
+    type: 'booking',
     name: 'サカエスタッフ',
     initial: 'ス',
     lastMessage: '明日の指名予約入りました。よろしくお願いします',
@@ -137,13 +137,44 @@ export const TALK_LIST = [
   },
   {
     id: 'store-3',
-    type: 'store',
+    type: 'booking',
     name: 'ナゴヤ店スタッフ',
     initial: 'ナ',
     lastMessage: 'お疲れ様でした！今日もありがとうございました',
     lastTime: '4/5',
     lastTimestamp: '2026-04-05T02:30:00',
     unread: 0,
+  },
+  // 店舗チャット
+  {
+    id: 'sg-1',
+    type: 'store',
+    name: 'SG 全体連絡',
+    initial: 'SG',
+    lastMessage: '来月のキャンペーンについてお知らせします',
+    lastTime: '20:10',
+    lastTimestamp: '2026-04-06T20:10:00',
+    unread: 2,
+  },
+  {
+    id: 'sg-2',
+    type: 'store',
+    name: '内勤スタッフ',
+    initial: '内',
+    lastMessage: '給与明細を送付しました。ご確認ください',
+    lastTime: '昨日',
+    lastTimestamp: '2026-04-05T17:30:00',
+    unread: 0,
+  },
+  {
+    id: 'sg-3',
+    type: 'store',
+    name: 'イベント連絡',
+    initial: 'イ',
+    lastMessage: '来週のイベント詳細です。参加可能かご確認ください',
+    lastTime: '4/5',
+    lastTimestamp: '2026-04-05T11:00:00',
+    unread: 1,
   },
 ];
 
@@ -269,6 +300,24 @@ export const MESSAGES = {
     { date: '2026-04-05', messages: [
       { id: 'm3', sender: 'me',      text: '本日もよろしくお願いします！',             time: '19:00', read: true },
       { id: 'm4', sender: 'partner', text: 'お疲れ様でした！今日もありがとうございました', time: '02:30', read: true },
+    ]},
+  ],
+  'sg-1': [
+    { date: '2026-04-06', messages: [
+      { id: 'm1', sender: 'partner', text: '来月のキャンペーンについてお知らせします。詳細は別途資料を共有します', time: '20:10', read: false },
+      { id: 'm2', sender: 'partner', text: '期間：5月1日〜5月31日、対象：全キャスト', time: '20:11', read: false },
+    ]},
+  ],
+  'sg-2': [
+    { date: '2026-04-05', messages: [
+      { id: 'm1', sender: 'partner', text: '4月分の給与明細を送付しました。ご確認ください', time: '17:30', read: true },
+      { id: 'm2', sender: 'me',      text: '確認しました。ありがとうございます',             time: '17:45', read: true },
+    ]},
+  ],
+  'sg-3': [
+    { date: '2026-04-05', messages: [
+      { id: 'm1', sender: 'partner', text: '来週のイベント詳細です。参加可能かご確認ください', time: '11:00', read: false },
+      { id: 'm2', sender: 'partner', text: '日時：4月13日(日) 20:00〜 / 場所：本店VIPルーム',  time: '11:01', read: false },
     ]},
   ],
 };
