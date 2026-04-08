@@ -105,7 +105,7 @@ html, body {
 .app-body {
   height: 100dvh;
   box-sizing: border-box;
-  padding: var(--header-h) 16px calc(var(--nav-h) + env(safe-area-inset-bottom, 0));
+  padding: calc(var(--header-h) + 12px) 16px calc(var(--nav-h) + env(safe-area-inset-bottom, 0));
   overflow-y: auto;
 }
 .app-body--flush {
