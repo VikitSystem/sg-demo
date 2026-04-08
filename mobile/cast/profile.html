@@ -23,14 +23,14 @@
   <main class="app-body">
 
     <!-- プロフィールカード -->
-    <div class="card mb-16" style="display:flex;align-items:center;gap:16px;">
+    <div class="card mb-16 d-flex align-center gap-16">
       <div class="profile-avatar">あ</div>
       <div class="profile-info">
         <div class="profile-info__name">あおい</div>
         <div class="profile-info__brand">ごほうび &nbsp;|&nbsp; レギュラー</div>
-        <div style="margin-top:6px;display:flex;gap:6px;">
-          <span class="badge badge--blue" style="font-size:10px;">在籍中</span>
-          <span class="badge badge--dim"  style="font-size:10px;">ID: 101</span>
+        <div class="profile-badge-row">
+          <span class="badge badge--blue badge--xs">在籍中</span>
+          <span class="badge badge--dim badge--xs">ID: 101</span>
         </div>
       </div>
     </div>
@@ -88,7 +88,7 @@
         </span>
       </a>
       <a class="menu-item" href="#">
-        <span class="menu-item__icon" style="color:var(--muted);">
+        <span class="menu-item__icon menu-item__icon--muted">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </span>
         <span class="menu-item__label">店舗お問い合わせ</span>
@@ -98,9 +98,9 @@
       </a>
     </div>
 
-    <div style="text-align:center;margin-top:20px;font-size:11px;color:var(--dim);">
+    <div class="profile-footer">
       SG キャストポータル &nbsp;v0.1.0 (仮)<br>
-      <span style="font-size:10px;">※ こちらは仮実装の画面です</span>
+      <span class="text-xs">※ こちらは仮実装の画面です</span>
     </div>
 
   </main>
@@ -140,24 +140,6 @@
   </nav>
 </div>
 
-<script>
-  (function () {
-    var current = new Date(2026, 3, 1); // 2026年4月
-    function render() {
-      var y = current.getFullYear();
-      var m = current.getMonth() + 1;
-      document.getElementById('month-label').textContent = y + '年' + m + '月の実績';
-    }
-    document.getElementById('prev-month').addEventListener('click', function () {
-      current.setMonth(current.getMonth() - 1);
-      render();
-    });
-    document.getElementById('next-month').addEventListener('click', function () {
-      current.setMonth(current.getMonth() + 1);
-      render();
-    });
-    render();
-  })();
-</script>
+<script type="module" src="./script.js"></script>
 </body>
 </html>

@@ -23,11 +23,11 @@
   <main class="app-body">
 
     <!-- 挨拶 + 出勤状態 -->
-    <div class="card card--accent-green mb-16" style="display:flex;align-items:center;gap:14px;">
-      <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#0b0d12;flex-shrink:0;">あ</div>
-      <div style="flex:1;">
-        <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px;">あおい さん</div>
-        <div style="font-size:12px;color:var(--muted);">ごほうび</div>
+    <div class="card card--accent-green mb-16 d-flex align-center gap-16">
+      <div class="cast-avatar">あ</div>
+      <div class="flex-1">
+        <div class="cast-name">あおい さん</div>
+        <div class="text-sm text-muted">ごほうび</div>
       </div>
       <span class="badge badge--green" id="status-badge">● 出勤中</span>
     </div>
@@ -40,7 +40,7 @@
       </div>
       <div class="summary-card">
         <div class="summary-card__label">出勤時間</div>
-        <div class="summary-card__value" style="font-size:16px;" id="clock-in-time">18:30〜</div>
+        <div class="summary-card__value summary-card__value--sm" id="clock-in-time">18:30〜</div>
       </div>
     </div>
 

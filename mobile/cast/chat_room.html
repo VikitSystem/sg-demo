@@ -5,160 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>チャット — SG キャスト</title>
   <link rel="stylesheet" href="../style.css" />
-  <style>
-    .chat-body {
-      flex: 1;
-      padding-top: calc(var(--header-h) + 12px);
-      padding-bottom: calc(var(--nav-h) + 60px);
-      padding-left: 0;
-      padding-right: 0;
-      overflow-y: auto;
-    }
-
-    .chat-list {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      padding: 0 12px;
-    }
-
-    .chat-date-divider {
-      text-align: center;
-      font-size: 11px;
-      color: var(--dim);
-      margin: 16px 0 12px;
-    }
-
-    .chat-row {
-      display: flex;
-      align-items: flex-end;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-    .chat-row--me { flex-direction: row-reverse; }
-
-    .chat-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--panel-row);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--muted);
-      flex-shrink: 0;
-      border: 1px solid var(--line);
-    }
-    .chat-avatar--me {
-      background: linear-gradient(135deg, var(--blue), var(--cyan));
-      color: #0b0d12;
-    }
-
-    .chat-bubble-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      max-width: 72%;
-    }
-    .chat-row--me .chat-bubble-wrap { align-items: flex-end; }
-
-    .chat-name {
-      font-size: 11px;
-      color: var(--dim);
-      padding: 0 4px;
-    }
-
-    .chat-bubble {
-      display: inline-block;
-      padding: 10px 14px;
-      border-radius: 18px;
-      border-bottom-left-radius: 4px;
-      font-size: 14px;
-      line-height: 1.5;
-      color: var(--text);
-      background: var(--panel);
-      border: 1px solid var(--line);
-      word-break: break-word;
-    }
-    .chat-bubble--me {
-      background: var(--blue);
-      color: #0b0d12;
-      border: none;
-      border-bottom-left-radius: 18px;
-      border-bottom-right-radius: 4px;
-    }
-
-    .chat-meta {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 0 4px;
-    }
-    .chat-time  { font-size: 10px; color: var(--dim); }
-    .chat-read  { font-size: 10px; color: var(--blue); }
-    .chat-row--me .chat-meta { flex-direction: row-reverse; }
-
-    /* 入力バー */
-    .chat-input-bar {
-      position: fixed;
-      bottom: var(--nav-h);
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 480px;
-      background: rgba(17,21,34,0.96);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-top: 1px solid var(--line);
-      padding: 10px 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      z-index: 99;
-    }
-    .chat-input {
-      flex: 1;
-      background: var(--deep);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 9px 14px;
-      font-size: 14px;
-      color: var(--text);
-      font-family: var(--font);
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    .chat-input:focus { border-color: var(--blue); }
-    .chat-send-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: var(--blue);
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: opacity 0.15s;
-    }
-    .chat-send-btn:hover { opacity: 0.85; }
-
-    /* ヘッダーの戻るボタン */
-    .app-header__back {
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 4px 8px 4px 0;
-      display: flex;
-      align-items: center;
-      transition: color 0.15s;
-    }
-    .app-header__back:hover { color: var(--text); }
-  </style>
 </head>
 <body>
 <script src="auth.js"></script>
@@ -171,79 +17,14 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
     <span class="app-header__logo">SG</span>
-    <span class="app-header__title" id="room-title">田中さん</span>
+    <span class="app-header__title" id="room-title"></span>
     <span class="app-header__badge">仮画面</span>
     <button class="app-header__action" onclick="logout()">ログアウト</button>
   </header>
 
   <!-- Chat Body -->
   <main class="chat-body">
-    <div class="chat-list">
-
-      <div class="chat-date-divider">2026年4月6日（月）</div>
-
-      <div class="chat-row">
-        <div class="chat-avatar" id="partner-avatar">田</div>
-        <div class="chat-bubble-wrap">
-          <span class="chat-name" id="partner-name">田中さん</span>
-          <span class="chat-bubble">こんばんは！今日もよろしくお願いします😊</span>
-          <div class="chat-meta"><span class="chat-time">20:15</span></div>
-        </div>
-      </div>
-
-      <div class="chat-row chat-row--me">
-        <div class="chat-avatar chat-avatar--me">あ</div>
-        <div class="chat-bubble-wrap">
-          <span class="chat-bubble chat-bubble--me">こちらこそ、お待ちしています！</span>
-          <div class="chat-meta">
-            <span class="chat-read">既読</span>
-            <span class="chat-time">20:17</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="chat-row">
-        <div class="chat-avatar partner-avatar-ref">田</div>
-        <div class="chat-bubble-wrap">
-          <span class="chat-bubble">20時半ごろ伺いますね。シャンパン1本お願いしてもいいですか？</span>
-          <div class="chat-meta"><span class="chat-time">20:19</span></div>
-        </div>
-      </div>
-
-      <div class="chat-row chat-row--me">
-        <div class="chat-avatar chat-avatar--me">あ</div>
-        <div class="chat-bubble-wrap">
-          <span class="chat-bubble chat-bubble--me">もちろんです！ご用意してお待ちしますね🥂</span>
-          <div class="chat-meta">
-            <span class="chat-read">既読</span>
-            <span class="chat-time">20:21</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="chat-date-divider">2026年4月7日（火）</div>
-
-      <div class="chat-row">
-        <div class="chat-avatar partner-avatar-ref">田</div>
-        <div class="chat-bubble-wrap">
-          <span class="chat-name partner-name-ref">田中さん</span>
-          <span class="chat-bubble">昨日はありがとうございました！また来週も伺いますね</span>
-          <div class="chat-meta"><span class="chat-time">14:03</span></div>
-        </div>
-      </div>
-
-      <div class="chat-row chat-row--me">
-        <div class="chat-avatar chat-avatar--me">あ</div>
-        <div class="chat-bubble-wrap">
-          <span class="chat-bubble chat-bubble--me">ありがとうございます😊お待ちしています！</span>
-          <div class="chat-meta">
-            <span class="chat-read">既読</span>
-            <span class="chat-time">14:10</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
+    <div class="chat-list" id="chat-list"></div>
   </main>
 
   <!-- 入力バー -->
@@ -289,23 +70,6 @@
   </nav>
 </div>
 
-<script>
-  // URLパラメータで相手名・アバターを切り替え
-  var partners = {
-    '1': { name: '田中さん', initial: '田' },
-    '2': { name: '鈴木さん', initial: '鈴' },
-    '3': { name: '佐藤さん', initial: '佐' },
-    '4': { name: '中村さん', initial: '中' },
-    '5': { name: '伊藤さん', initial: '伊' },
-  };
-  var id = new URLSearchParams(location.search).get('id') || '1';
-  var p = partners[id] || partners['1'];
-
-  document.getElementById('room-title').textContent = p.name;
-  document.getElementById('partner-avatar').textContent = p.initial;
-  document.getElementById('partner-name').textContent = p.name;
-  document.querySelectorAll('.partner-avatar-ref').forEach(function(el){ el.textContent = p.initial; });
-  document.querySelectorAll('.partner-name-ref').forEach(function(el){ el.textContent = p.name; });
-</script>
+<script type="module" src="./script.js"></script>
 </body>
 </html>

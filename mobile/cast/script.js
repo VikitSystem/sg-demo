@@ -562,3 +562,83 @@ if (document.getElementById('clock')) {
     this.textContent = isOpen ? 'すべて見る' : '閉じる';
   });
 }
+
+// ═══════════════════════════════════════════════
+// マイページ  (#prev-month が存在する場合)
+// ═══════════════════════════════════════════════
+if (document.getElementById('prev-month')) {
+  let current = new Date(2026, 3, 1); // 2026年4月
+
+  function renderMonthLabel() {
+    const y = current.getFullYear();
+    const m = current.getMonth() + 1;
+    document.getElementById('month-label').textContent = `${y}年${m}月の実績`;
+  }
+
+  document.getElementById('prev-month').addEventListener('click', () => {
+    current.setMonth(current.getMonth() - 1);
+    renderMonthLabel();
+  });
+  document.getElementById('next-month').addEventListener('click', () => {
+    current.setMonth(current.getMonth() + 1);
+    renderMonthLabel();
+  });
+
+  renderMonthLabel();
+}
+
+// ═══════════════════════════════════════════════
+// チャット一覧  (#talk-list が存在する場合)
+// ═══════════════════════════════════════════════
+if (document.getElementById('talk-list')) {
+  const { TALK_LIST } = await import('./mock/chat.js');
+
+  document.getElementById('talk-list').innerHTML = TALK_LIST.map(t => `
+    <a class="talk-item" href="chat_room.html?id=${t.id}">
+      <div class="talk-avatar">${t.initial}</div>
+      <div class="talk-body">
+        <div class="talk-header">
+          <span class="talk-name">${t.name}</span>
+          <span class="talk-time">${t.lastTime}</span>
+        </div>
+        <div class="talk-footer">
+          <span class="talk-preview">${t.lastMessage}</span>
+          ${t.unread > 0 ? `<span class="talk-unread">${t.unread}</span>` : ''}
+        </div>
+      </div>
+    </a>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════
+// 個別チャット  (#chat-list が存在する場合)
+// ═══════════════════════════════════════════════
+if (document.getElementById('chat-list')) {
+  const { TALK_LIST, MESSAGES, formatDateLabel } = await import('./mock/chat.js');
+
+  const id      = new URLSearchParams(location.search).get('id') || '1';
+  const partner = TALK_LIST.find(t => t.id === id) ?? TALK_LIST[0];
+  const threads = MESSAGES[id] ?? [];
+
+  document.getElementById('room-title').textContent = partner.name;
+
+  document.getElementById('chat-list').innerHTML = threads.map(thread => `
+    <div class="chat-date-divider">${formatDateLabel(thread.date)}</div>
+    ${thread.messages.map((msg, i) => {
+      const isMe     = msg.sender === 'me';
+      const showName = !isMe && i === 0;
+      return `
+        <div class="chat-row${isMe ? ' chat-row--me' : ''}">
+          <div class="chat-avatar${isMe ? ' chat-avatar--me' : ''}">${isMe ? 'あ' : partner.initial}</div>
+          <div class="chat-bubble-wrap">
+            ${showName ? `<span class="chat-msg-name">${partner.name}</span>` : ''}
+            <span class="chat-bubble${isMe ? ' chat-bubble--me' : ''}">${msg.text}</span>
+            <div class="chat-meta">
+              ${isMe && msg.read ? `<span class="chat-read">既読</span>` : ''}
+              <span class="chat-time">${msg.time}</span>
+            </div>
+          </div>
+        </div>`;
+    }).join('')}
+  `).join('');
+}
