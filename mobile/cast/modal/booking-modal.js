@@ -39,7 +39,7 @@ const MODAL_HTML = `
   </div>
   <div class="modal-sheet__footer">
     <button class="modal-action-btn modal-action-btn--cancel" id="modal-btn-add-op">オプション追加</button>
-    <button class="modal-action-btn modal-action-btn--end"    id="modal-btn-add-confirm" style="display:none;">追加</button>
+    <button class="modal-action-btn modal-action-btn--start"  id="modal-btn-add-confirm" style="display:none;">追加</button>
     <button class="modal-action-btn modal-action-btn--cancel" id="modal-btn-add-cancel" style="display:none;">キャンセル</button>
     <button class="modal-action-btn modal-action-btn--start" id="modal-btn-start">接客開始</button>
     <button class="modal-action-btn modal-action-btn--end"   id="modal-btn-end">接客終了</button>
