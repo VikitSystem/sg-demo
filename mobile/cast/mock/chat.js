@@ -1,10 +1,15 @@
 /**
  * キャスト向けモバイルアプリ チャットモックデータ
  * ログインキャスト: あおい (companionId: 101)
- * 今日: 2026-04-08
+ * 今日: 2026-04-06 / 現在時刻: 21:30 (固定)
+ *
+ * 今日  = 2026-04-06 → lastTime に時刻表示
+ * 昨日  = 2026-04-05 → lastTime に '昨日'
+ * それ以前 → lastTime に '月/日'
  *
  * unread > 0 → スレッドの末尾は partner の未読メッセージ (read:false)
- * unread = 0 → 末尾は me のメッセージ、または全 partner メッセージが read:true
+ * unread = 0 → 末尾は me のメッセージ (read:false = 未読) または partner 全件 read:true
+ * me メッセージの read: true = 相手が既読、false = 未読
  */
 
 /** トーク一覧 */
@@ -14,8 +19,8 @@ export const TALK_LIST = [
     name: 'タナカ',
     initial: 'タ',
     lastMessage: 'また来週もぜひ伺いますね！',
-    lastTime: '昨日',
-    lastTimestamp: '2026-04-07T14:10:00',
+    lastTime: '14:10',
+    lastTimestamp: '2026-04-06T14:10:00',
     unread: 2,
   },
   {
@@ -23,7 +28,7 @@ export const TALK_LIST = [
     name: 'スズキ',
     initial: 'ス',
     lastMessage: 'お待ちしています！',
-    lastTime: '4/5',
+    lastTime: '昨日',
     lastTimestamp: '2026-04-05T23:55:00',
     unread: 0,
   },
@@ -32,8 +37,8 @@ export const TALK_LIST = [
     name: 'サトウ',
     initial: 'サ',
     lastMessage: '今夜21時ごろ予約できますか？',
-    lastTime: '4/5',
-    lastTimestamp: '2026-04-05T18:30:00',
+    lastTime: '18:30',
+    lastTimestamp: '2026-04-06T18:30:00',
     unread: 1,
   },
   {
@@ -59,8 +64,8 @@ export const TALK_LIST = [
     name: 'ヤマモト',
     initial: 'ヤ',
     lastMessage: 'ありがとうございます！楽しみにしています🙌',
-    lastTime: '3/30',
-    lastTimestamp: '2026-03-30T19:55:00',
+    lastTime: '19:55',
+    lastTimestamp: '2026-04-06T19:55:00',
     unread: 1,
   },
   {
@@ -104,89 +109,90 @@ export const TALK_LIST = [
 /**
  * 個別チャットメッセージ
  * sender: 'me' | 'partner'
- * read: partner メッセージを自分が既読にしたか
+ * read (partner): cast が既読にしたか
+ * read (me): partner が既読にしたか
  */
 export const MESSAGES = {
   // unread:2 → 末尾に partner の未読2件
   '1': [
-    { date: '2026-04-06', messages: [
+    { date: '2026-04-05', messages: [
       { id: 'm1', sender: 'partner', text: 'こんばんは！今日もよろしくお願いします😊', time: '20:15', read: true },
-      { id: 'm2', sender: 'me',      text: 'こちらこそ、お待ちしています！',           time: '20:17' },
-      { id: 'm3', sender: 'partner', text: '20時半ごろ伺いますね。シャンパン1本お願いしてもいいですか？', time: '20:19', read: true },
-      { id: 'm4', sender: 'me',      text: 'もちろんです！ご用意してお待ちしますね🥂', time: '20:21' },
+      { id: 'm2', sender: 'me',      text: 'こちらこそ、お待ちしています！',           time: '20:17', read: true },
+      { id: 'm3', sender: 'partner', text: '20時半ごろ伺いますね。いつものコスプレをお願いしてもいいですか？', time: '20:19', read: true },
+      { id: 'm4', sender: 'me',      text: 'もちろんです！ご用意してお待ちしますね',   time: '20:21', read: true },
     ]},
-    { date: '2026-04-07', messages: [
-      { id: 'm5', sender: 'me',      text: '昨日はありがとうございました！',            time: '13:00' },
-      { id: 'm6', sender: 'partner', text: 'こちらこそ楽しかったです😊',               time: '14:03', read: false },
-      { id: 'm7', sender: 'partner', text: 'また来週もぜひ伺いますね！',               time: '14:10', read: false },
+    { date: '2026-04-06', messages: [
+      { id: 'm5', sender: 'me',      text: '昨日はありがとうございました！',  time: '13:00', read: true },
+      { id: 'm6', sender: 'partner', text: 'こちらこそ楽しかったです😊',      time: '14:03', read: false },
+      { id: 'm7', sender: 'partner', text: 'また来週もぜひ伺いますね！',      time: '14:10', read: false },
     ]},
   ],
-  // unread:0 → 末尾は me のメッセージ
+  // unread:0 → 末尾は me のメッセージ (昨日)
   '2': [
     { date: '2026-04-05', messages: [
       { id: 'm1', sender: 'partner', text: '今日もありがとうございました！', time: '23:50', read: true },
-      { id: 'm2', sender: 'me',      text: 'こちらこそ楽しかったです😊',    time: '23:52' },
+      { id: 'm2', sender: 'me',      text: 'こちらこそ楽しかったです😊',    time: '23:52', read: true },
       { id: 'm3', sender: 'partner', text: 'また来週伺いますね！',          time: '23:53', read: true },
-      { id: 'm4', sender: 'me',      text: 'お待ちしています！',            time: '23:55' },
+      { id: 'm4', sender: 'me',      text: 'お待ちしています！',            time: '23:55', read: false },
     ]},
   ],
-  // unread:1 → 末尾に partner の未読1件
+  // unread:1 → 末尾に partner の未読1件 (今日)
   '3': [
-    { date: '2026-04-05', messages: [
+    { date: '2026-04-06', messages: [
       { id: 'm1', sender: 'partner', text: '今夜21時ごろ予約できますか？', time: '18:30', read: false },
     ]},
   ],
   // unread:0 → 末尾は me のメッセージ
   '4': [
     { date: '2026-04-03', messages: [
-      { id: 'm1', sender: 'me',      text: '本日もありがとうございました！またのご来店お待ちしています🙏', time: '01:10' },
+      { id: 'm1', sender: 'me',      text: '本日もありがとうございました！またのご来店お待ちしています🙏', time: '01:10', read: true },
       { id: 'm2', sender: 'partner', text: 'ありがとうございました',                                     time: '01:15', read: true },
-      { id: 'm3', sender: 'me',      text: 'またのお越しをお待ちしています😊',                           time: '01:17' },
+      { id: 'm3', sender: 'me',      text: 'またのお越しをお待ちしています😊',                           time: '01:17', read: false },
     ]},
   ],
   // unread:0 → 末尾は me のメッセージ
   '5': [
     { date: '2026-04-01', messages: [
       { id: 'm1', sender: 'partner', text: '先日はありがとう、また来るね', time: '22:00', read: true },
-      { id: 'm2', sender: 'me',      text: 'お待ちしています！😊',        time: '22:05' },
+      { id: 'm2', sender: 'me',      text: 'お待ちしています！😊',        time: '22:05', read: false },
     ]},
   ],
-  // unread:1 → 末尾に partner の未読1件
+  // unread:1 → 末尾に partner の未読1件 (今日)
   '6': [
-    { date: '2026-03-30', messages: [
-      { id: 'm1', sender: 'partner', text: '今週末も行っていいですか？',              time: '19:45', read: true },
-      { id: 'm2', sender: 'me',      text: 'もちろんです！お待ちしています😊',        time: '19:50' },
+    { date: '2026-04-06', messages: [
+      { id: 'm1', sender: 'partner', text: '今週末も行っていいですか？',               time: '19:45', read: true },
+      { id: 'm2', sender: 'me',      text: 'もちろんです！お待ちしています😊',         time: '19:50', read: true },
       { id: 'm3', sender: 'partner', text: 'ありがとうございます！楽しみにしています🙌', time: '19:55', read: false },
     ]},
   ],
   // unread:0 → 末尾は me のメッセージ
   '7': [
     { date: '2026-03-28', messages: [
-      { id: 'm1', sender: 'me',      text: '本日はありがとうございました！', time: '00:30' },
+      { id: 'm1', sender: 'me',      text: '本日はありがとうございました！', time: '00:30', read: true },
       { id: 'm2', sender: 'partner', text: 'いつもありがとうございます！',   time: '00:35', read: true },
-      { id: 'm3', sender: 'me',      text: 'またのお越しお待ちしています😊', time: '00:38' },
+      { id: 'm3', sender: 'me',      text: 'またのお越しお待ちしています😊', time: '00:38', read: false },
     ]},
   ],
   // unread:0 → 末尾は me のメッセージ
   '8': [
     { date: '2026-03-25', messages: [
       { id: 'm1', sender: 'partner', text: '次回の予約を入れてもいいですか', time: '21:00', read: true },
-      { id: 'm2', sender: 'me',      text: 'はい、いつでもどうぞ！',        time: '21:05' },
+      { id: 'm2', sender: 'me',      text: 'はい、いつでもどうぞ！',        time: '21:05', read: false },
     ]},
   ],
   // unread:0 → 末尾は me のメッセージ
   '9': [
     { date: '2026-03-22', messages: [
-      { id: 'm1', sender: 'me',      text: '本日もありがとうございました🙏', time: '02:00' },
+      { id: 'm1', sender: 'me',      text: '本日もありがとうございました🙏', time: '02:00', read: true },
       { id: 'm2', sender: 'partner', text: '楽しかったです、また行きます',   time: '02:10', read: true },
-      { id: 'm3', sender: 'me',      text: 'お待ちしています！',            time: '02:12' },
+      { id: 'm3', sender: 'me',      text: 'お待ちしています！',            time: '02:12', read: false },
     ]},
   ],
   // unread:0 → 末尾は me のメッセージ
   '10': [
     { date: '2026-03-20', messages: [
       { id: 'm1', sender: 'partner', text: 'お疲れ様でした！',                           time: '23:00', read: true },
-      { id: 'm2', sender: 'me',      text: 'ありがとうございます、またお待ちしています！', time: '23:05' },
+      { id: 'm2', sender: 'me',      text: 'ありがとうございます、またお待ちしています！', time: '23:05', read: false },
     ]},
   ],
 };

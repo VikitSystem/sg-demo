@@ -894,3 +894,27 @@ html, body {
   transition: opacity 0.15s;
 }
 .chat-send-btn:hover { opacity: 0.85; }
+
+/* ── Scrollbar ── */
+.app-body,
+.chat-body {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(107,120,148,0.35) transparent;
+}
+.app-body::-webkit-scrollbar,
+.chat-body::-webkit-scrollbar {
+  width: 3px;
+}
+.app-body::-webkit-scrollbar-track,
+.chat-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.app-body::-webkit-scrollbar-thumb,
+.chat-body::-webkit-scrollbar-thumb {
+  background: rgba(107,120,148,0.35);
+  border-radius: 3px;
+}
+.app-body::-webkit-scrollbar-thumb:hover,
+.chat-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(107,120,148,0.6);
+}

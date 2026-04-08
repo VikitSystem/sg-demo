@@ -625,6 +625,35 @@ if (document.getElementById('chat-list')) {
     }).join('')}
   `).join('');
 
-  const chatBody = document.querySelector('.chat-body');
-  if (chatBody) chatBody.scrollTop = chatBody.scrollHeight;
+  const anchor = document.createElement('div');
+  document.getElementById('chat-list').appendChild(anchor);
+  anchor.scrollIntoView();
+
+  function sendMessage() {
+    const input = document.querySelector('.chat-input');
+    const text  = input.value.trim();
+    if (!text) return;
+
+    const now  = new Date();
+    const time = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+    const row = document.createElement('div');
+    row.className = 'chat-row chat-row--me';
+    row.innerHTML = `
+      <div class="chat-avatar chat-avatar--me">あ</div>
+      <div class="chat-bubble-wrap">
+        <span class="chat-bubble chat-bubble--me">${text}</span>
+        <div class="chat-meta">
+          <span class="chat-time">${time}</span>
+        </div>
+      </div>`;
+    document.getElementById('chat-list').insertBefore(row, anchor);
+    anchor.scrollIntoView();
+    input.value = '';
+  }
+
+  document.querySelector('.chat-send-btn').addEventListener('click', sendMessage);
+  document.querySelector('.chat-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.isComposing) sendMessage();
+  });
 }
