@@ -36,6 +36,7 @@ const RAW_BOOKINGS = [
     staffId: 'staff_00',           // 田中
     carGoingId: 'car_01',          // 富安ドライバー
     carReturnId: 'car_01',
+    nominationLabel: 'F指名',
     status: 'completed',
     note: '',
   },
@@ -53,6 +54,7 @@ const RAW_BOOKINGS = [
     staffId: 'staff_01',           // 佐藤
     carGoingId: 'car_02',          // 鉢呂ドライバー
     carReturnId: 'car_02',
+    nominationLabel: 'Fフリー',
     status: 'active',
     note: '初回のお客様',
   },
@@ -69,6 +71,7 @@ const RAW_BOOKINGS = [
     staffId: 'staff_00',           // 田中
     carGoingId: 'car_00',          // なし
     carReturnId: 'car_00',
+    nominationLabel: 'J指名',
     status: 'pending',
     note: '',
   },

@@ -928,25 +928,30 @@ html, body {
 
 /* ── Scrollbar ── */
 .app-body,
-.chat-body {
+.chat-body,
+.modal-sheet {
   scrollbar-width: thin;
   scrollbar-color: #3a4260 #111522;
 }
 .app-body::-webkit-scrollbar,
-.chat-body::-webkit-scrollbar {
+.chat-body::-webkit-scrollbar,
+.modal-sheet::-webkit-scrollbar {
   width: 4px;
 }
 .app-body::-webkit-scrollbar-track,
-.chat-body::-webkit-scrollbar-track {
+.chat-body::-webkit-scrollbar-track,
+.modal-sheet::-webkit-scrollbar-track {
   background: #111522;
   border-radius: 4px;
 }
 .app-body::-webkit-scrollbar-thumb,
-.chat-body::-webkit-scrollbar-thumb {
+.chat-body::-webkit-scrollbar-thumb,
+.modal-sheet::-webkit-scrollbar-thumb {
   background: #3a4260;
   border-radius: 4px;
 }
 .app-body::-webkit-scrollbar-thumb:hover,
-.chat-body::-webkit-scrollbar-thumb:hover {
+.chat-body::-webkit-scrollbar-thumb:hover,
+.modal-sheet::-webkit-scrollbar-thumb:hover {
   background: #5a6480;
 }
