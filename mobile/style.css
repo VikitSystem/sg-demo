@@ -556,7 +556,9 @@ html, body {
   transform: translateY(100%);
   transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
   max-height: 85vh;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 .modal-sheet.is-open {
   transform: translateY(0);
@@ -594,6 +596,10 @@ html, body {
 .modal-sheet__close:hover { color: var(--text); }
 .modal-sheet__body {
   padding: 16px 20px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  overscroll-behavior: contain;
 }
 .modal-detail-grid {
   display: grid;
@@ -929,29 +935,29 @@ html, body {
 /* ── Scrollbar ── */
 .app-body,
 .chat-body,
-.modal-sheet {
+.modal-sheet__body {
   scrollbar-width: thin;
   scrollbar-color: #3a4260 #111522;
 }
 .app-body::-webkit-scrollbar,
 .chat-body::-webkit-scrollbar,
-.modal-sheet::-webkit-scrollbar {
+.modal-sheet__body::-webkit-scrollbar {
   width: 4px;
 }
 .app-body::-webkit-scrollbar-track,
 .chat-body::-webkit-scrollbar-track,
-.modal-sheet::-webkit-scrollbar-track {
+.modal-sheet__body::-webkit-scrollbar-track {
   background: #111522;
   border-radius: 4px;
 }
 .app-body::-webkit-scrollbar-thumb,
 .chat-body::-webkit-scrollbar-thumb,
-.modal-sheet::-webkit-scrollbar-thumb {
+.modal-sheet__body::-webkit-scrollbar-thumb {
   background: #3a4260;
   border-radius: 4px;
 }
 .app-body::-webkit-scrollbar-thumb:hover,
 .chat-body::-webkit-scrollbar-thumb:hover,
-.modal-sheet::-webkit-scrollbar-thumb:hover {
+.modal-sheet__body::-webkit-scrollbar-thumb:hover {
   background: #5a6480;
 }

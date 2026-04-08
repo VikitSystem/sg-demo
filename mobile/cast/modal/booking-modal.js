@@ -7,7 +7,7 @@
  *   // クリック時に openBookingModal(booking) を呼ぶ
  */
 import { TALK_LIST } from '../mock/chat.js';
-import { OP_OPTIONS } from '../../../mock/bookingselect.js';
+import { OP_OPTIONS, COURSE_OPTIONS, EXTENSION_OPTIONS, NOMINATIONS } from '../../../mock/bookingselect.js';
 
 const MODAL_HTML = `
 <div class="modal-overlay" id="modal-overlay"></div>
@@ -26,7 +26,7 @@ const MODAL_HTML = `
       </div>
     </div>
   </div>
-  <div class="modal-sheet__body">
+  <div class="modal-sheet__body" id="modal-body">
     <div id="modal-note" style="display:none;font-size:12px;color:var(--amber);margin-bottom:12px;"></div>
     <div class="modal-detail-grid" id="modal-grid"></div>
     <!-- オプション追加モード時に表示 -->
@@ -39,20 +39,63 @@ const MODAL_HTML = `
   </div>
   <div class="modal-sheet__footer">
     <button class="modal-action-btn modal-action-btn--cancel" id="modal-btn-add-op">オプション追加</button>
-    <button class="modal-action-btn modal-action-btn--cancel" id="modal-btn-add-cancel" style="display:none;">キャンセル</button>
     <button class="modal-action-btn modal-action-btn--end"    id="modal-btn-add-confirm" style="display:none;">追加</button>
+    <button class="modal-action-btn modal-action-btn--cancel" id="modal-btn-add-cancel" style="display:none;">キャンセル</button>
     <button class="modal-action-btn modal-action-btn--start" id="modal-btn-start">接客開始</button>
     <button class="modal-action-btn modal-action-btn--end"   id="modal-btn-end">接客終了</button>
     <button class="modal-action-btn modal-action-btn--cancel" id="modal-btn-cancel" style="display:none;">完了取消</button>
   </div>
 </div>`;
 
-let _overlay, _sheet, _btnStart, _btnEnd, _btnCancel, _btnChat, _btnStoreChat, _btnDriverChat, _btnAddOp, _btnAddConfirm, _btnAddCancel;
+let _overlay, _sheet, _body, _btnStart, _btnEnd, _btnCancel, _btnChat, _btnStoreChat, _btnDriverChat, _btnAddOp, _btnAddConfirm, _btnAddCancel;
 let _initialized = false;
 let _lastBooking = null;
 let _lastDisableStart = false;
 let _addMode = false;
-let _selectedItems = null;
+let _selectedItems  = null;
+let _selectedExt    = null;   // 現在のセッションで選択中（未確定）
+let _baseExtMinutes = 0;      // 元の予約の延長分数
+let _addedExtMinutes = 0;     // 追加ボタンで確定した累積分数
+let _extBtns        = [];     // 延長ラジオボタン群（リセット用）
+
+function _setActive(btn, on) {
+  btn.dataset.active    = on ? '1' : '0';
+  btn.style.background  = on ? 'rgba(122,162,255,0.14)' : 'var(--deep)';
+  btn.style.borderColor = on ? 'var(--blue)'            : 'var(--line)';
+  btn.style.color       = on ? 'var(--blue)'            : 'var(--muted)';
+}
+
+function _parseExtMinutes(label) {
+  if (!label || label === 'なし' || label === '—') return 0;
+  let total = 0;
+  const hMatch = label.match(/(\d+)時間/);
+  const mMatch = label.match(/(\d+)分/);
+  if (hMatch) total += parseInt(hMatch[1]) * 60;
+  if (mMatch) total += parseInt(mMatch[1]);
+  return total;
+}
+
+function _formatExtMinutes(minutes) {
+  if (minutes <= 0) return 'なし';
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h > 0 && m > 0) return `${h}時間${m}分`;
+  if (h > 0) return `${h}時間`;
+  return `${m}分`;
+}
+
+function _updateExtCell() {
+  const cell = document.getElementById('modal-ext-cell');
+  if (!cell) return;
+  // 選択中の分数をプレビュー加算して表示
+  const previewMin = _selectedExt ? _parseExtMinutes(_selectedExt) : 0;
+  const total = _baseExtMinutes + _addedExtMinutes + previewMin;
+  cell.textContent = _formatExtMinutes(total) || 'なし';
+}
+function _updateOpCell() {
+  const cell = document.getElementById('modal-op-cell');
+  if (cell) cell.textContent = (_selectedItems && _selectedItems.size) ? [..._selectedItems].join(' / ') : 'なし';
+}
 
 export function closeBookingModal() {
   _overlay?.classList.remove('is-open');
@@ -75,15 +118,24 @@ function _applyActionBtns() {
 
 function _enterAddMode() {
   _addMode = true;
+  // 延長ラジオを毎回リセット（前回の選択を引き継がない）
+  _selectedExt = null;
+  _extBtns.forEach(b => _setActive(b, false));
   _btnAddOp.style.display      = 'none';
   _btnAddCancel.style.display  = '';
   _btnAddConfirm.style.display = '';
   document.getElementById('modal-add-area').style.display = '';
   _btnStart.style.display  = 'none';
   _btnEnd.style.display    = 'none';
+  _body.scrollTop = _body.scrollHeight;
 }
 
 function _exitAddMode(cancel = false) {
+  if (!cancel && _selectedExt) {
+    // 追加確定: 選択中の延長を累積に加算
+    _addedExtMinutes += _parseExtMinutes(_selectedExt);
+  }
+  _selectedExt = null;
   _addMode = false;
   _btnAddOp.style.display      = '';
   _btnAddCancel.style.display  = 'none';
@@ -91,9 +143,9 @@ function _exitAddMode(cancel = false) {
   document.getElementById('modal-add-area').style.display = 'none';
   if (cancel) {
     _selectedItems?.clear();
-    const cell = document.getElementById('modal-op-cell');
-    if (cell) cell.textContent = 'なし';
+    _updateOpCell();
   }
+  _updateExtCell();
   _applyActionBtns();
 }
 
@@ -108,6 +160,7 @@ export function initBookingModal({ onStart, onEnd, onCancel } = {}) {
 
   _overlay        = document.getElementById('modal-overlay');
   _sheet          = document.getElementById('modal-sheet');
+  _body           = document.getElementById('modal-body');
   _btnStart       = document.getElementById('modal-btn-start');
   _btnEnd         = document.getElementById('modal-btn-end');
   _btnCancel      = document.getElementById('modal-btn-cancel');
@@ -186,47 +239,11 @@ export function openBookingModal(booking, { disableStart = false } = {}) {
     _btnDriverChat.style.display = 'none';
   }
 
-  // オプション・延長 トグルボタン（追加モード用）
-  const opContainer = document.getElementById('modal-op-btns');
-  opContainer.innerHTML = '';
-  _selectedItems = new Set();
-
-  function updateOpCell() {
-    const cell = document.getElementById('modal-op-cell');
-    if (cell) cell.textContent = _selectedItems.size ? [..._selectedItems].join(' / ') : 'なし';
-  }
-
-  const BTN_STYLE = 'background:var(--deep);border:1px solid var(--line);color:var(--muted);border-radius:4px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:var(--font);transition:background 0.15s,border-color 0.15s,color 0.15s;';
-
-  function makeToggleBtn(label) {
-    const btn = document.createElement('button');
-    btn.textContent = label;
-    btn.style.cssText = BTN_STYLE;
-    btn.dataset.active = '0';
-    btn.addEventListener('click', () => {
-      const on = btn.dataset.active === '1';
-      btn.dataset.active = on ? '0' : '1';
-      btn.style.background  = on ? 'var(--deep)'             : 'rgba(122,162,255,0.14)';
-      btn.style.borderColor = on ? 'var(--line)'             : 'var(--blue)';
-      btn.style.color       = on ? 'var(--muted)'            : 'var(--blue)';
-      on ? _selectedItems.delete(label) : _selectedItems.add(label);
-      updateOpCell();
-    });
-    return btn;
-  }
-
-  // 延長ボタン（30分 / 1時間）
-  const extContainer = document.getElementById('modal-ext-btns');
-  extContainer.innerHTML = '';
-  ['30分', '1時間'].forEach(label => {
-    extContainer.appendChild(makeToggleBtn(label));
-  });
-
-  // OPボタン
-  opContainer.innerHTML = '';
-  (OP_OPTIONS[booking.shopId] ?? []).forEach(op => {
-    opContainer.appendChild(makeToggleBtn(op.label));
-  });
+  // 追加モード用データリセット
+  _selectedItems   = new Set();
+  _selectedExt     = null;
+  _baseExtMinutes  = _parseExtMinutes(booking.extensionLabel);
+  _addedExtMinutes = 0;
 
   // ノート
   const noteEl = document.getElementById('modal-note');
@@ -237,16 +254,27 @@ export function openBookingModal(booking, { disableStart = false } = {}) {
     noteEl.style.display = 'none';
   }
 
-  // 詳細グリッド
+  // 料金計算
+  const coursePrice = (COURSE_OPTIONS[booking.shopId] ?? []).find(c => c.id === booking.courseId)?.price ?? 0;
+  const extPrice    = (EXTENSION_OPTIONS[booking.shopId] ?? []).find(e => e.id === booking.extensionId)?.price ?? 0;
+  const nom         = NOMINATIONS[booking.nominationLabel] ?? {};
+  const nomPrice    = (nom.membershipFee ?? 0) + (nom.nominationFee ?? 0);
+  const totalPrice  = coursePrice + extPrice + nomPrice;
+  const castSalary  = Math.floor(totalPrice / 2);
+  const fmt = n => `¥${n.toLocaleString()}`;
+
+  // 詳細グリッド（先に生成して modal-ext-cell / modal-op-cell を DOM に確保）
   const cells = [
     ['コース',       booking.courseLabel,            null],
-    ['延長',         booking.extensionLabel,         null],
+    ['延長',         _formatExtMinutes(_baseExtMinutes) || 'なし', 'modal-ext-cell'],
     ['デリバリー',   booking.deliveryLabel,          null],
     ['担当スタッフ', booking.staffLabel,             null],
     ['送迎（往）',   booking.carGoingLabel,          null],
     ['送迎（帰）',   booking.carReturnLabel,         null],
     ['指名',         booking.nominationLabel ?? '—', null],
     ['オプション',   'なし',                         'modal-op-cell'],
+    ['受取金額',     fmt(totalPrice),                null],
+    ['キャスト給与', fmt(castSalary),                null],
   ];
   document.getElementById('modal-grid').innerHTML = cells.map(([label, value, id]) =>
     `<div class="modal-detail-cell">
@@ -254,6 +282,49 @@ export function openBookingModal(booking, { disableStart = false } = {}) {
       <div class="modal-detail-cell__value"${id ? ` id="${id}"` : ''}>${value}</div>
     </div>`
   ).join('');
+
+  const BTN_STYLE = 'background:var(--deep);border:1px solid var(--line);color:var(--muted);border-radius:4px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:var(--font);transition:background 0.15s,border-color 0.15s,color 0.15s;';
+
+  // 延長ボタン（ラジオ式 — 1つだけ選択可）
+  const extContainer = document.getElementById('modal-ext-btns');
+  extContainer.innerHTML = '';
+  _extBtns = [];
+  ['30分', '1時間'].forEach(label => {
+    const btn = document.createElement('button');
+    btn.textContent = label;
+    btn.style.cssText = BTN_STYLE;
+    btn.dataset.active = '0';
+    btn.addEventListener('click', () => {
+      const wasActive = btn.dataset.active === '1';
+      _extBtns.forEach(b => _setActive(b, false));
+      if (wasActive) {
+        _selectedExt = null;
+      } else {
+        _setActive(btn, true);
+        _selectedExt = label;
+      }
+      _updateExtCell();
+    });
+    _extBtns.push(btn);
+    extContainer.appendChild(btn);
+  });
+
+  // オプションボタン（複数選択可）
+  const opContainer = document.getElementById('modal-op-btns');
+  opContainer.innerHTML = '';
+  (OP_OPTIONS[booking.shopId] ?? []).forEach(op => {
+    const btn = document.createElement('button');
+    btn.textContent = op.label;
+    btn.style.cssText = BTN_STYLE;
+    btn.dataset.active = '0';
+    btn.addEventListener('click', () => {
+      const on = btn.dataset.active === '1';
+      _setActive(btn, !on);
+      on ? _selectedItems.delete(op.label) : _selectedItems.add(op.label);
+      _updateOpCell();
+    });
+    opContainer.appendChild(btn);
+  });
 
   // ボタン状態
   _applyActionBtns();
