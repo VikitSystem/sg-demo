@@ -361,6 +361,11 @@ html, body {
   font-size: 13px;
   color: var(--muted);
 }
+.profile-info__rank-next {
+  font-size: 11px;
+  color: var(--amber);
+  margin-top: 3px;
+}
 
 .menu-list { margin-bottom: 12px; }
 .menu-item {
