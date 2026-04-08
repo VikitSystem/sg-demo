@@ -569,7 +569,14 @@ if (document.getElementById('prev-month')) {
 if (document.getElementById('talk-list')) {
   const { TALK_LIST } = await import('./mock/chat.js');
 
-  document.getElementById('talk-list').innerHTML = TALK_LIST.map(t => `
+  const sortedTalks = [...TALK_LIST].sort((a, b) => {
+    const aUnread = a.unread > 0 ? 1 : 0;
+    const bUnread = b.unread > 0 ? 1 : 0;
+    if (bUnread !== aUnread) return bUnread - aUnread;
+    return new Date(b.lastTimestamp) - new Date(a.lastTimestamp);
+  });
+
+  document.getElementById('talk-list').innerHTML = sortedTalks.map(t => `
     <a class="talk-item" href="chat_room.html?id=${t.id}">
       <div class="talk-avatar">${t.initial}</div>
       <div class="talk-body">
@@ -617,4 +624,7 @@ if (document.getElementById('chat-list')) {
         </div>`;
     }).join('')}
   `).join('');
+
+  const chatBody = document.querySelector('.chat-body');
+  if (chatBody) chatBody.scrollTop = chatBody.scrollHeight;
 }
