@@ -18,7 +18,7 @@ export const TALK_LIST = [
     id: '1',
     type: 'customer',
     name: 'ナカタ',
-    initial: 'タ',
+    initial: 'ナ',
     lastMessage: 'また来週もぜひ伺いますね！',
     lastTime: '14:10',
     lastTimestamp: '2026-04-06T14:10:00',
@@ -174,7 +174,7 @@ export const TALK_LIST = [
     lastMessage: '来週のイベント詳細です。参加可能かご確認ください',
     lastTime: '4/5',
     lastTimestamp: '2026-04-05T11:00:00',
-    unread: 1,
+    unread: 2,
   },
 ];
 
@@ -291,7 +291,7 @@ export const MESSAGES = {
       { id: 'm5', sender: 'me',      text: 'ありがとうございます！しっかり対応します',     time: '21:20', read: false },
     ]},
   ],
-  // 店舗チャット: unread:0 → 末尾は partner のメッセージ (4/5)
+  // 予約チャット: unread:0 → 末尾は partner のメッセージ (4/5)
   'store-3': [
     { date: '2026-04-04', messages: [
       { id: 'm1', sender: 'partner', text: '本日はお疲れ様でした。指名も好調でしたよ！', time: '02:00', read: true },

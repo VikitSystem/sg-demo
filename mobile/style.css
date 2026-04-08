@@ -38,8 +38,6 @@ html, body {
 
 /* ── App Shell ── */
 .app-shell {
-  display: flex;
-  flex-direction: column;
   height: 100vh;
   max-width: 480px;
   margin: 0 auto;
@@ -48,7 +46,12 @@ html, body {
 
 /* ── App Header ── */
 .app-header {
-  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
   background: rgba(11,13,18,0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -100,17 +103,23 @@ html, body {
 
 /* ── App Body ── */
 .app-body {
-  flex: 1;
-  padding: 16px;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: var(--header-h) 16px calc(var(--nav-h) + env(safe-area-inset-bottom, 0));
   overflow-y: auto;
 }
 .app-body--flush {
-  padding: 0;
+  padding: var(--header-h) 0 calc(var(--nav-h) + env(safe-area-inset-bottom, 0));
 }
 
 /* ── Bottom Navigation ── */
 .bottom-nav {
-  flex-shrink: 0;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
   height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0));
   padding-bottom: env(safe-area-inset-bottom, 0);
   background: rgba(17,21,34,0.96);
@@ -787,8 +796,9 @@ html, body {
 
 /* ── Chat Room (chat_room.html) ── */
 .chat-body {
-  flex: 1;
-  padding: 12px 0;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: calc(var(--header-h) + 12px) 0 calc(var(--nav-h) + 60px + env(safe-area-inset-bottom, 0) + 12px);
   overflow-y: auto;
 }
 .chat-list {
@@ -872,7 +882,12 @@ html, body {
 .chat-read { font-size: 10px; color: var(--blue); }
 
 .chat-input-bar {
-  flex-shrink: 0;
+  position: fixed;
+  bottom: calc(var(--nav-h) + env(safe-area-inset-bottom, 0));
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
   background: rgba(17,21,34,0.96);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
