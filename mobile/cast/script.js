@@ -3,6 +3,21 @@
  * 全ページ共通で読み込み、要素の存在でページを判別して初期化する
  */
 
+// ── 共通ユーティリティ ──────────────────────────────
+function toast(msg) {
+  const el = document.createElement('div');
+  el.textContent = msg;
+  Object.assign(el.style, {
+    position: 'fixed', bottom: '80px', left: '50%', transform: 'translateX(-50%)',
+    background: 'var(--panel)', border: '1px solid var(--line-2)', color: 'var(--text)',
+    padding: '10px 20px', borderRadius: '8px', fontSize: '13px', zIndex: '400',
+    boxShadow: 'var(--shadow)', whiteSpace: 'nowrap', opacity: '1', transition: 'opacity 0.3s',
+  });
+  document.body.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2000);
+}
+// ────────────────────────────────────────────────────
+
 // ═══════════════════════════════════════════════
 // ログインページ  (#login-btn が存在する場合)
 // ═══════════════════════════════════════════════
@@ -135,19 +150,6 @@ if (document.getElementById('next-booking')) {
   renderList();
 
   // モーダル
-  function toast(msg) {
-    const el = document.createElement('div');
-    el.textContent = msg;
-    Object.assign(el.style, {
-      position: 'fixed', bottom: '100px', left: '50%', transform: 'translateX(-50%)',
-      background: 'var(--panel)', border: '1px solid var(--line-2)', color: 'var(--text)',
-      padding: '10px 20px', borderRadius: '8px', fontSize: '13px', zIndex: '400',
-      boxShadow: 'var(--shadow)', whiteSpace: 'nowrap', opacity: '1', transition: 'opacity 0.3s',
-    });
-    document.body.appendChild(el);
-    setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2000);
-  }
-
   initBookingModal({
     onStart: (booking) => {
       booking.status = 'active';
@@ -297,19 +299,6 @@ if (document.getElementById('booking-list')) {
 
   renderList();
 
-  function toast(msg) {
-    const el = document.createElement('div');
-    el.textContent = msg;
-    Object.assign(el.style, {
-      position: 'fixed', bottom: '100px', left: '50%', transform: 'translateX(-50%)',
-      background: 'var(--panel)', border: '1px solid var(--line-2)', color: 'var(--text)',
-      padding: '10px 20px', borderRadius: '8px', fontSize: '13px', zIndex: '400',
-      boxShadow: 'var(--shadow)', whiteSpace: 'nowrap', opacity: '1', transition: 'opacity 0.3s',
-    });
-    document.body.appendChild(el);
-    setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2000);
-  }
-
   initBookingModal({
     onStart: (booking) => {
       booking.status = 'active';
@@ -352,7 +341,7 @@ if (document.getElementById('clock')) {
     const label = `${s.date}（${s.day}）`;
     if (s.isToday) {
       const timeStr = s.start && s.end ? `${s.start} 〜 ${s.end}` : '';
-      return `<div class="att-log-item" style="background:var(--line-2);margin:0 -14px;padding:0 14px;">
+      return `<div class="att-log-item">
         <div class="att-log-item__date" style="color:var(--blue);">${label}</div>
         <div class="att-log-item__times">${timeStr}</div>
         <span class="badge badge--blue" style="font-size:10px;padding:2px 7px;">今日</span>
@@ -495,19 +484,6 @@ if (document.getElementById('clock')) {
     let   [eh, em] = endStr.split(':').map(Number);
     if (eh * 60 + em < sh * 60 + sm) eh += 24; // 日をまたぐ場合
     return ((eh * 60 + em) - (sh * 60 + sm)) / 60;
-  }
-
-  function toast(msg) {
-    const el = document.createElement('div');
-    el.textContent = msg;
-    Object.assign(el.style, {
-      position: 'fixed', bottom: '80px', left: '50%', transform: 'translateX(-50%)',
-      background: 'var(--panel)', border: '1px solid var(--line-2)', color: 'var(--text)',
-      padding: '10px 20px', borderRadius: '8px', fontSize: '13px', zIndex: '200',
-      boxShadow: 'var(--shadow)', whiteSpace: 'nowrap', opacity: '1', transition: 'opacity 0.3s',
-    });
-    document.body.appendChild(el);
-    setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2000);
   }
 
   btnIn.addEventListener('click', () => {

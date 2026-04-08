@@ -11,15 +11,6 @@ import {
   CAR_OPTIONS,
 } from '../../../mock/bookingselect.js';
 
-export const CAST_PROFILE = {
-  companionId: '101',
-  name: 'あおい',
-  brand: 'ごほうび',
-  shopId: '01',
-  rank: 'レギュラー',
-  joinDate: '2025-06-01',
-};
-
 /**
  * 本日(2026-04-06)の予約 — bookingselect.js のIDで管理
  *
@@ -93,21 +84,3 @@ export const TODAY_BOOKINGS = RAW_BOOKINGS.map(b => ({
   carReturnLabel: labelById(CAR_OPTIONS, b.carReturnId),
 }));
 
-/** 当月勤怠サマリー */
-export const MONTH_SUMMARY = {
-  year: 2026,
-  month: 4,
-  workDays: 8,
-  totalMinutes: 2640,
-  scheduledDays: 16,
-};
-
-/** 今月の日別勤怠ログ（最近7日分） */
-export const ATTENDANCE_LOG = [
-  { date: '2026-04-06', clockIn: '18:30', clockOut: null,    breakMinutes: 0,   status: 'working' },
-  { date: '2026-04-05', clockIn: '19:00', clockOut: '02:30', breakMinutes: 30,  status: 'done' },
-  { date: '2026-04-04', clockIn: '18:45', clockOut: '01:00', breakMinutes: 0,   status: 'done' },
-  { date: '2026-04-03', clockIn: null,    clockOut: null,    breakMinutes: 0,   status: 'off' },
-  { date: '2026-04-02', clockIn: '19:00', clockOut: '00:30', breakMinutes: 30,  status: 'done' },
-  { date: '2026-04-01', clockIn: '19:30', clockOut: '23:00', breakMinutes: 0,   status: 'done' },
-];

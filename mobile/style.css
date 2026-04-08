@@ -181,25 +181,6 @@ html, body {
 .card--accent-amber { border-color: rgba(255,194,107,0.35); background: rgba(255,194,107,0.06); }
 .card--accent-red   { border-color: rgba(255,107,127,0.35); background: rgba(255,107,127,0.06); }
 
-.card__label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
-  letter-spacing: 0.06em;
-  margin-bottom: 6px;
-}
-.card__value {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1.2;
-}
-.card__sub {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 4px;
-}
-
 /* ── Status Badge ── */
 .badge {
   display: inline-flex;
@@ -284,24 +265,6 @@ html, body {
 }
 
 /* ── Attendance Clock ── */
-.clock-display {
-  text-align: center;
-  padding: 20px 0 12px;
-}
-.clock-display__time {
-  font-size: 48px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: 0.02em;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-}
-.clock-display__date {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 6px;
-}
-
 .clock-btn-group {
   display: flex;
   gap: 10px;
@@ -459,52 +422,6 @@ html, body {
 }
 .date-nav__btn:hover { color: var(--text); background: var(--hover); }
 
-/* ── Form ── */
-.field-group { margin-bottom: 14px; }
-.field-label {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--muted);
-  letter-spacing: 0.04em;
-  margin-bottom: 6px;
-}
-.field-input {
-  width: 100%;
-  background: var(--deep);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 11px 12px;
-  font-size: 14px;
-  color: var(--text);
-  font-family: var(--font);
-  outline: none;
-  transition: border-color 0.15s;
-}
-.field-input:focus { border-color: var(--blue); }
-
-/* ── Button ── */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  height: 44px;
-  padding: 0 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.15s;
-  border: none;
-  letter-spacing: 0.02em;
-}
-.btn:hover { opacity: 0.85; }
-.btn--primary { background: var(--blue); color: #0b0d12; }
-.btn--ghost   { background: transparent; color: var(--text); border: 1px solid var(--line-2); }
-.btn--danger  { background: rgba(255,107,127,0.15); color: var(--red); border: 1px solid rgba(255,107,127,0.3); }
-.btn--full    { width: 100%; }
-
 /* ── Login Page ── */
 .login-wrap {
   min-height: 100vh;
@@ -607,8 +524,6 @@ html, body {
 .text-center { text-align: center; }
 .d-flex { display: flex; }
 .align-center { align-items: center; }
-.gap-8  { gap: 8px; }
-.gap-12 { gap: 12px; }
 
 /* ── Modal / Bottom Sheet ── */
 .modal-overlay {
